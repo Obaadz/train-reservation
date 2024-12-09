@@ -2,46 +2,82 @@ import { Router } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { PassengerModel } from '../models/Passenger';
+import { EmployeeModel } from '../models/Employee';
 
 const router = Router();
 
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, userType = 'passenger' } = req.body;
     const isArabic = req.headers['accept-language']?.includes('ar');
 
-    // Find passenger by email
-    const passenger = await PassengerModel.findByEmail(email);
+    if (userType === 'employee') {
+      // Employee login
+      const employee = await EmployeeModel.findByEmail(email);
 
-    if (!passenger) {
-      return res.status(401).json({
-        message: isArabic ? 'بيانات غير صحيحة' : 'Invalid credentials'
-      });
+      if (!employee || !employee.can_login) {
+        return res.status(401).json({
+          message: isArabic ? 'بيانات غير صحيحة' : 'Invalid credentials'
+        });
+      }
+
+      // Verify password
+      const isValidPassword = await bcrypt.compare(password, employee.password);
+      if (!isValidPassword) {
+        return res.status(401).json({
+          message: isArabic ? 'بيانات غير صحيحة' : 'Invalid credentials'
+        });
+      }
+
+      // Generate token
+      const token = jwt.sign(
+        {
+          id: employee.eid,
+          name: `${employee.first_name} ${employee.last_name}`,
+          email: employee.email,
+          role: employee.role,
+          userType: 'employee'
+        },
+        process.env.JWT_SECRET!,
+        { expiresIn: '24h' }
+      );
+
+      res.json({ token, userType: 'employee' });
+    } else {
+      // Passenger login
+      const passenger = await PassengerModel.findByEmail(email);
+
+      if (!passenger) {
+        return res.status(401).json({
+          message: isArabic ? 'بيانات غير صحيحة' : 'Invalid credentials'
+        });
+      }
+
+      // Verify password
+      const isValidPassword = await bcrypt.compare(password, passenger.password);
+      if (!isValidPassword) {
+        return res.status(401).json({
+          message: isArabic ? 'بيانات غير صحيحة' : 'Invalid credentials'
+        });
+      }
+
+      // Generate token
+      const token = jwt.sign(
+        {
+          id: passenger.pid,
+          name: passenger.name,
+          email: passenger.email,
+          role: 'PASSENGER',
+          loyaltyPoints: passenger.loyalty_points,
+          loyaltyStatus: passenger.loyalty_status,
+          userType: 'passenger'
+        },
+        process.env.JWT_SECRET!,
+        { expiresIn: '24h' }
+      );
+
+      res.json({ token, userType: 'passenger' });
     }
-
-    // Verify password
-    const isValidPassword = await bcrypt.compare(password, passenger.password);
-    if (!isValidPassword) {
-      return res.status(401).json({
-        message: isArabic ? 'بيانات غير صحيحة' : 'Invalid credentials'
-      });
-    }
-
-    // Generate token
-    const token = jwt.sign(
-      {
-        id: passenger.pid,
-        name: passenger.name,
-        email: passenger.email,
-        role: 'PASSENGER',
-        loyaltyPoints: passenger.loyalty_points,
-        loyaltyStatus: passenger.loyalty_status
-      },
-      process.env.JWT_SECRET!,
-      { expiresIn: '24h' }
-    );
-
-    res.json({ token });
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({
@@ -88,7 +124,8 @@ router.post('/register', async (req, res) => {
         email,
         role: 'PASSENGER',
         loyaltyPoints: 0,
-        loyaltyStatus: 'BRONZE'
+        loyaltyStatus: 'BRONZE',
+        userType: 'passenger'
       },
       process.env.JWT_SECRET!,
       { expiresIn: '24h' }

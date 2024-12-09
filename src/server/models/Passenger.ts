@@ -9,16 +9,21 @@ export interface Passenger extends RowDataPacket {
   password: string;
   loyalty_status: string;
   loyalty_points: number;
+  created_at: Date;
 }
 
 export const PassengerModel = {
-  async create(passenger: Omit<Passenger, 'RowDataPacket'>): Promise<string> {
-    const hashedPassword = await bcrypt.hash(passenger.password, 10);
-    const [result] = await pool.query<ResultSetHeader>(
-      'INSERT INTO passengers (pid, name, email, password, loyalty_status, loyalty_points) VALUES (?, ?, ?, ?, ?, ?)',
-      [passenger.pid, passenger.name, passenger.email, hashedPassword, passenger.loyalty_status, passenger.loyalty_points]
+  async findAll(): Promise<Passenger[]> {
+    const [rows] = await pool.query<Passenger[]>('SELECT * FROM passengers');
+    return rows;
+  },
+
+  async findById(pid: string): Promise<Passenger | null> {
+    const [rows] = await pool.query<Passenger[]>(
+      'SELECT * FROM passengers WHERE pid = ?',
+      [pid]
     );
-    return passenger.pid;
+    return rows[0] || null;
   },
 
   async findByEmail(email: string): Promise<Passenger | null> {
@@ -29,10 +34,43 @@ export const PassengerModel = {
     return rows[0] || null;
   },
 
+  async create(passenger: Omit<Passenger, 'RowDataPacket'>): Promise<string> {
+    const hashedPassword = await bcrypt.hash(passenger.password, 10);
+    const [result] = await pool.query<ResultSetHeader>(
+      'INSERT INTO passengers (pid, name, email, password, loyalty_status, loyalty_points) VALUES (?, ?, ?, ?, ?, ?)',
+      [passenger.pid, passenger.name, passenger.email, hashedPassword, passenger.loyalty_status, passenger.loyalty_points]
+    );
+    return passenger.pid;
+  },
+
+  async update(pid: string, updates: Partial<Passenger>): Promise<void> {
+    const setClauses = Object.keys(updates)
+      .map(key => `${key} = ?`)
+      .join(', ');
+
+    await pool.query(
+      `UPDATE passengers SET ${setClauses} WHERE pid = ?`,
+      [...Object.values(updates), pid]
+    );
+  },
+
   async updateLoyaltyPoints(pid: string, points: number): Promise<void> {
     await pool.query(
       'UPDATE passengers SET loyalty_points = loyalty_points + ? WHERE pid = ?',
       [points, pid]
     );
+
+    // Update loyalty status based on total points
+    await pool.query(`
+      UPDATE passengers 
+      SET loyalty_status = 
+        CASE
+          WHEN loyalty_points >= 5000 THEN 'PLATINUM'
+          WHEN loyalty_points >= 2500 THEN 'GOLD'
+          WHEN loyalty_points >= 1000 THEN 'SILVER'
+          ELSE 'BRONZE'
+        END
+      WHERE pid = ?
+    `, [pid]);
   }
 };

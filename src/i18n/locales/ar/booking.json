@@ -10,11 +10,23 @@
   "platform": "رصيف",
   "coach": "عربة",
   "seat": "مقعد",
-  "totalPrice": "السعر الإجمالي",
+  "totalAmount": "المبلغ الإجمالي",
   "paymentMethod": "طريقة الدفع",
   "cardNumber": "رقم البطاقة",
   "expiryDate": "تاريخ الانتهاء",
   "cvv": "رمز الأمان",
-  "bookingSuccess": "تم الحجز بنجاح",
-  "bookingReference": "رقم الحجز"
+  "confirmPayment": "تأكيد الدفع",
+  "securePayment": "جميع المدفوعات آمنة ومشفرة",
+  "back": "رجوع",
+  "next": "التالي",
+  "viewBookings": "عرض الحجوزات",
+  "success": {
+    "bookingConfirmed": "تم تأكيد الحجز بنجاح",
+    "bookingReference": "رقم الحجز"
+  },
+  "errors": {
+    "selectSeat": "الرجاء اختيار مقعد",
+    "fillDetails": "الرجاء إكمال جميع البيانات المطلوبة",
+    "bookingFailed": "فشل في إتمام الحجز. الرجاء المحاولة مرة أخرى"
+  }
 }

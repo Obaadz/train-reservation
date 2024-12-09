@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
-import { LogIn, Mail, Lock } from "lucide-react";
+import { LogIn, Mail, Lock, Users, Building } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../contexts/ToastContext";
 import FormField from "../components/auth/FormField";
@@ -19,6 +19,7 @@ const Login: React.FC = () => {
   const { login } = useAuth();
   const { showToast } = useToast();
   const navigate = useNavigate();
+  const [userType, setUserType] = useState<'passenger' | 'employee'>('passenger');
 
   const { values, errors, isSubmitting, handleChange, handleSubmit } = useForm<LoginForm>({
     initialValues: {
@@ -31,7 +32,7 @@ const Login: React.FC = () => {
         const response = await fetch("http://localhost:3000/api/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(values),
+          body: JSON.stringify({ ...values, userType }),
         });
 
         const data = await response.json();
@@ -53,8 +54,29 @@ const Login: React.FC = () => {
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <LogIn className="mx-auto h-12 w-12 text-indigo-600" />
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">{t("loginTitle")}</h2>
-          <p className="mt-2 text-sm text-gray-600">{t("loginSubtitle")}</p>
+          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+            {t(userType === 'passenger' ? "loginTitle" : "employeeLoginTitle")}
+          </h2>
+          <p className="mt-2 text-sm text-gray-600">
+            {t(userType === 'passenger' ? "loginSubtitle" : "employeeLoginSubtitle")}
+          </p>
+        </div>
+
+        <div className="flex justify-center gap-4">
+          <Button
+            variant={userType === 'passenger' ? 'primary' : 'outline'}
+            onClick={() => setUserType('passenger')}
+            leftIcon={<Users className="w-4 h-4" />}
+          >
+            {t("passengerLogin")}
+          </Button>
+          <Button
+            variant={userType === 'employee' ? 'primary' : 'outline'}
+            onClick={() => setUserType('employee')}
+            leftIcon={<Building className="w-4 h-4" />}
+          >
+            {t("employeeLogin")}
+          </Button>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -109,14 +131,16 @@ const Login: React.FC = () => {
             {t("loginButton")}
           </Button>
 
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              {t("noAccount")}{" "}
-              <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
-                {t("registerNow")}
-              </Link>
-            </p>
-          </div>
+          {userType === 'passenger' && (
+            <div className="text-center">
+              <p className="text-sm text-gray-600">
+                {t("noAccount")}{" "}
+                <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
+                  {t("registerNow")}
+                </Link>
+              </p>
+            </div>
+          )}
         </form>
       </div>
     </div>

@@ -10,11 +10,23 @@
   "platform": "Platform",
   "coach": "Coach",
   "seat": "Seat",
-  "totalPrice": "Total Price",
+  "totalAmount": "Total Amount",
   "paymentMethod": "Payment Method",
   "cardNumber": "Card Number",
   "expiryDate": "Expiry Date",
   "cvv": "CVV",
-  "bookingSuccess": "Booking Successful",
-  "bookingReference": "Booking Reference"
+  "confirmPayment": "Confirm Payment",
+  "securePayment": "All payments are secure and encrypted",
+  "back": "Back",
+  "next": "Next",
+  "viewBookings": "View Bookings",
+  "success": {
+    "bookingConfirmed": "Booking Confirmed",
+    "bookingReference": "Booking Reference"
+  },
+  "errors": {
+    "selectSeat": "Please select a seat",
+    "fillDetails": "Please fill in all required details",
+    "bookingFailed": "Booking failed. Please try again"
+  }
 }

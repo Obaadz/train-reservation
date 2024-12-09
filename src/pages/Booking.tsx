@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../contexts/AuthContext";
+import { useToast } from "../contexts/ToastContext";
 import BookingSteps from "../components/booking/BookingSteps";
 import SeatSelection from "../components/booking/SeatSelection";
 import PassengerDetails from "../components/booking/PassengerDetails";
 import PaymentForm from "../components/booking/PaymentForm";
-import { useAuth } from "../contexts/AuthContext";
+import Button from "../components/common/Button";
 
 const STEPS = ["seatSelection", "passengerDetails", "payment", "confirmation"];
 
@@ -13,12 +15,14 @@ const Booking: React.FC = () => {
   const { id } = useParams();
   const { t } = useTranslation(["booking"]);
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
+  const { showToast } = useToast();
   const [currentStep, setCurrentStep] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [selectedSeat, setSelectedSeat] = useState("");
   const [passengerDetails, setPassengerDetails] = useState({
-    name: "",
-    email: "",
+    name: user?.name || "",
+    email: user?.email || "",
     phone: "",
     idNumber: "",
   });
@@ -35,6 +39,18 @@ const Booking: React.FC = () => {
   }, [isAuthenticated, navigate]);
 
   const handleNext = () => {
+    if (currentStep === 0 && !selectedSeat) {
+      showToast(t("errors.selectSeat"), "error");
+      return;
+    }
+
+    if (currentStep === 1) {
+      if (!passengerDetails.name || !passengerDetails.email || !passengerDetails.phone) {
+        showToast(t("errors.fillDetails"), "error");
+        return;
+      }
+    }
+
     setCurrentStep((prev) => Math.min(prev + 1, STEPS.length - 1));
   };
 
@@ -42,8 +58,13 @@ const Booking: React.FC = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 0));
   };
 
-  const handleSubmit = async () => {
+  const handlePayment = async () => {
+    setLoading(true);
     try {
+      // Simulate payment processing
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      // Create booking
       const response = await fetch("http://localhost:3000/api/bookings", {
         method: "POST",
         headers: {
@@ -54,18 +75,21 @@ const Booking: React.FC = () => {
           journeyId: id,
           seatNumber: selectedSeat,
           passengerDetails,
-          paymentDetails,
+          paymentDetails: {
+            method: "CREDIT_CARD",
+            last4: paymentDetails.cardNumber.slice(-4),
+          },
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Booking failed");
-      }
+      if (!response.ok) throw new Error();
 
-      const data = await response.json();
-      setCurrentStep(STEPS.length - 1); // Move to confirmation step
+      showToast(t("success.bookingConfirmed"), "success");
+      setCurrentStep(3); // Move to confirmation step
     } catch (error) {
-      console.error("Booking error:", error);
+      showToast(t("errors.bookingFailed"), "error");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -76,7 +100,7 @@ const Booking: React.FC = () => {
           <SeatSelection
             selectedSeat={selectedSeat}
             onSeatSelect={setSelectedSeat}
-            availableSeats={["A1", "A2", "B1", "B2", "C1", "C2"]} // This should come from API
+            availableSeats={["A1", "A2", "B1", "B2", "C1", "C2"]}
             coachClass="ECONOMY"
           />
         );
@@ -93,15 +117,41 @@ const Booking: React.FC = () => {
         return (
           <PaymentForm
             formData={paymentDetails}
-            onChange={(field, value) => setPaymentDetails((prev) => ({ ...prev, [field]: value }))}
-            totalAmount={250} // This should come from journey details
+            onChange={(field, value) =>
+              setPaymentDetails((prev) => ({ ...prev, [field]: value }))
+            }
+            onSubmit={handlePayment}
+            totalAmount={250}
+            loading={loading}
           />
         );
       case 3:
         return (
-          <div className="bg-white p-6 rounded-lg shadow-md text-center">
-            <div className="text-green-600 text-xl font-semibold mb-4">{t("bookingSuccess")}</div>
-            <p className="text-gray-600">{t("bookingReference")}: BOK-123456</p>
+          <div className="bg-white p-8 rounded-lg shadow-md text-center">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg
+                className="w-8 h-8 text-green-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">
+              {t("success.bookingConfirmed")}
+            </h3>
+            <p className="text-gray-600 mb-6">
+              {t("success.bookingReference")}: BOK-{Date.now().toString().slice(-6)}
+            </p>
+            <Button onClick={() => navigate("/dashboard")}>
+              {t("viewBookings")}
+            </Button>
           </div>
         );
       default:
@@ -111,30 +161,28 @@ const Booking: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">{t("title")}</h1>
+      <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+        {t("title")}
+      </h1>
 
       <BookingSteps currentStep={currentStep} steps={STEPS} />
 
       {renderStepContent()}
 
-      <div className="mt-8 flex justify-between">
-        {currentStep > 0 && currentStep < STEPS.length - 1 && (
-          <button
-            onClick={handleBack}
-            className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-          >
-            {t("common:back")}
-          </button>
-        )}
-        {currentStep < STEPS.length - 1 && (
-          <button
-            onClick={currentStep === 2 ? handleSubmit : handleNext}
-            className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 ml-auto"
-          >
-            {currentStep === 2 ? t("common:confirm") : t("common:next")}
-          </button>
-        )}
-      </div>
+      {currentStep < 3 && (
+        <div className="mt-8 flex justify-between">
+          {currentStep > 0 && (
+            <Button variant="outline" onClick={handleBack}>
+              {t("back")}
+            </Button>
+          )}
+          {currentStep < 2 && (
+            <Button onClick={handleNext} className="ml-auto">
+              {t("next")}
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   );
 };

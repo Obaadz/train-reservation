@@ -5,6 +5,7 @@ import authRouter from './routes/auth';
 import bookingRouter from './routes/bookings';
 import journeyRouter from './routes/journeys';
 import notificationRouter from './routes/notifications';
+import employeeRouter from './routes/employees';
 import setupMockData from './mockData';
 
 dotenv.config();
@@ -19,6 +20,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/bookings', bookingRouter);
 app.use('/api/journeys', journeyRouter);
 app.use('/api/notifications', notificationRouter);
+app.use('/api/employees', employeeRouter);
 
 const PORT = process.env.PORT || 3000;
 

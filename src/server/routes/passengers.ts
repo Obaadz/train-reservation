@@ -1,22 +1,51 @@
 import { Router } from 'express';
 import { PassengerModel } from '../models/Passenger';
-import { authenticateToken, isAdmin } from '../middleware/auth';
+import { BookingModel } from '../models/Booking';
+import { authenticateToken } from '../middleware/auth';
 
 const router = Router();
 
-router.get('/', authenticateToken, isAdmin, async (req, res) => {
+// Get passenger metrics
+router.get('/metrics', authenticateToken, async (req, res) => {
   try {
-    const passengers = await PassengerModel.findAll();
-    res.json(passengers.map(p => ({
-      id: p.pid,
-      name: p.name,
-      email: p.email,
-      loyaltyStatus: p.loyalty_status
-    })));
+    const passengerId = req.user.id;
+
+    // Get all bookings for the passenger
+    const bookings = await BookingModel.findByPassenger(passengerId);
+    
+    // Calculate metrics
+    const metrics = {
+      totalBookings: bookings.length,
+      activeJourneys: bookings.filter(b => b.booking_status === 'CONFIRMED' && new Date(b.departure_time) > new Date()).length,
+      totalSpent: bookings.reduce((sum, b) => sum + b.amount, 0),
+      upcomingTrips: bookings.filter(b => b.booking_status === 'CONFIRMED' && new Date(b.departure_time) > new Date()).length,
+      loyaltyPoints: req.user.loyaltyPoints || 0,
+      mostVisitedCity: calculateMostVisitedCity(bookings),
+      completedTrips: bookings.filter(b => b.booking_status === 'COMPLETED').length,
+      averagePrice: bookings.length ? Math.round(bookings.reduce((sum, b) => sum + b.amount, 0) / bookings.length) : 0
+    };
+
+    res.json(metrics);
   } catch (error) {
-    console.error('Passengers retrieval error:', error);
-    res.status(500).json({ message: 'خطأ في جلب بيانات المسافرين' });
+    console.error('Error fetching passenger metrics:', error);
+    res.status(500).json({
+      message: req.headers['accept-language']?.includes('ar')
+        ? 'خطأ في جلب إحصائيات المسافر'
+        : 'Error fetching passenger metrics'
+    });
   }
 });
+
+// Helper function to calculate most visited city
+function calculateMostVisitedCity(bookings: any[]): string {
+  const cityCounts = bookings.reduce((acc: { [key: string]: number }, booking) => {
+    const city = booking.destination_city;
+    acc[city] = (acc[city] || 0) + 1;
+    return acc;
+  }, {});
+
+  return Object.entries(cityCounts)
+    .sort(([,a], [,b]) => b - a)[0]?.[0] || '-';
+}
 
 export default router;
