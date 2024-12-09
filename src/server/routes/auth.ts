@@ -14,22 +14,22 @@ router.post('/login', async (req, res) => {
     const passenger = await PassengerModel.findByEmail(email);
 
     if (!passenger) {
-      return res.status(401).json({ 
-        message: isArabic ? 'بيانات غير صحيحة' : 'Invalid credentials' 
+      return res.status(401).json({
+        message: isArabic ? 'بيانات غير صحيحة' : 'Invalid credentials'
       });
     }
 
     // Verify password
     const isValidPassword = await bcrypt.compare(password, passenger.password);
     if (!isValidPassword) {
-      return res.status(401).json({ 
-        message: isArabic ? 'بيانات غير صحيحة' : 'Invalid credentials' 
+      return res.status(401).json({
+        message: isArabic ? 'بيانات غير صحيحة' : 'Invalid credentials'
       });
     }
 
     // Generate token
     const token = jwt.sign(
-      { 
+      {
         id: passenger.pid,
         name: passenger.name,
         email: passenger.email,
@@ -44,10 +44,10 @@ router.post('/login', async (req, res) => {
     res.json({ token });
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ 
-      message: req.headers['accept-language']?.includes('ar') 
-        ? 'خطأ في تسجيل الدخول' 
-        : 'Login error' 
+    res.status(500).json({
+      message: req.headers['accept-language']?.includes('ar')
+        ? 'خطأ في تسجيل الدخول'
+        : 'Login error'
     });
   }
 });
@@ -61,8 +61,8 @@ router.post('/register', async (req, res) => {
     const existingPassenger = await PassengerModel.findByEmail(email);
     if (existingPassenger) {
       return res.status(400).json({
-        message: isArabic 
-          ? 'البريد الإلكتروني مستخدم بالفعل' 
+        message: isArabic
+          ? 'البريد الإلكتروني مستخدم بالفعل'
           : 'Email already exists'
       });
     }
@@ -82,7 +82,7 @@ router.post('/register', async (req, res) => {
 
     // Generate token
     const token = jwt.sign(
-      { 
+      {
         id: pid,
         name,
         email,

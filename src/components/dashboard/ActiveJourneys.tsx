@@ -1,6 +1,6 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { Train, Clock, Users } from 'lucide-react';
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { Train, Clock, Users } from "lucide-react";
 
 interface Journey {
   id: string;
@@ -10,73 +10,71 @@ interface Journey {
   departureTime: string;
   arrivalTime: string;
   occupancy: number;
-  status: 'ON_TIME' | 'DELAYED' | 'ARRIVED';
+  status: "ON_TIME" | "DELAYED" | "ARRIVED";
 }
 
 const mockJourneys: Journey[] = [
   {
-    id: 'J001',
-    trainNumber: 'TRN001',
-    from: 'القاهرة',
-    to: 'الإسكندرية',
-    departureTime: '08:00',
-    arrivalTime: '10:15',
+    id: "J001",
+    trainNumber: "TRN001",
+    from: "القاهرة",
+    to: "الإسكندرية",
+    departureTime: "08:00",
+    arrivalTime: "10:15",
     occupancy: 85,
-    status: 'ON_TIME'
+    status: "ON_TIME",
   },
   {
-    id: 'J002',
-    trainNumber: 'TRN002',
-    from: 'الإسكندرية',
-    to: 'أسوان',
-    departureTime: '09:30',
-    arrivalTime: '15:45',
+    id: "J002",
+    trainNumber: "TRN002",
+    from: "الإسكندرية",
+    to: "أسوان",
+    departureTime: "09:30",
+    arrivalTime: "15:45",
     occupancy: 72,
-    status: 'DELAYED'
-  }
+    status: "DELAYED",
+  },
 ];
 
 const ActiveJourneys: React.FC = () => {
   const { t } = useTranslation();
 
-  const getStatusColor = (status: Journey['status']) => {
+  const getStatusColor = (status: Journey["status"]) => {
     switch (status) {
-      case 'ON_TIME':
-        return 'bg-green-100 text-green-800';
-      case 'DELAYED':
-        return 'bg-red-100 text-red-800';
-      case 'ARRIVED':
-        return 'bg-blue-100 text-blue-800';
+      case "ON_TIME":
+        return "bg-green-100 text-green-800";
+      case "DELAYED":
+        return "bg-red-100 text-red-800";
+      case "ARRIVED":
+        return "bg-blue-100 text-blue-800";
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   return (
     <div className="bg-white rounded-lg shadow-md">
       <div className="p-6">
-        <h2 className="text-lg font-semibold text-gray-900">
-          {t('dashboard.activeJourneys')}
-        </h2>
+        <h2 className="text-lg font-semibold text-gray-900">{t("dashboard:activeJourneys")}</h2>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('dashboard.trainNumber')}
+                {t("dashboard:trainNumber")}
               </th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('dashboard.route')}
+                {t("dashboard:route")}
               </th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('dashboard.time')}
+                {t("dashboard:time")}
               </th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('dashboard.occupancy')}
+                {t("dashboard:occupancy")}
               </th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('dashboard.status')}
+                {t("dashboard:status")}
               </th>
             </tr>
           </thead>
@@ -86,9 +84,7 @@ const ActiveJourneys: React.FC = () => {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center gap-2">
                     <Train className="w-4 h-4 text-indigo-600" />
-                    <span className="text-sm font-medium text-gray-900">
-                      {journey.trainNumber}
-                    </span>
+                    <span className="text-sm font-medium text-gray-900">{journey.trainNumber}</span>
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -111,14 +107,16 @@ const ActiveJourneys: React.FC = () => {
                         style={{ width: `${journey.occupancy}%` }}
                       ></div>
                     </div>
-                    <span className="text-sm text-gray-500">
-                      {journey.occupancy}%
-                    </span>
+                    <span className="text-sm text-gray-500">{journey.occupancy}%</span>
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(journey.status)}`}>
-                    {t(`dashboard.status${journey.status}`)}
+                  <span
+                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
+                      journey.status
+                    )}`}
+                  >
+                    {t(`dashboard:status${journey.status}`)}
                   </span>
                 </td>
               </tr>
