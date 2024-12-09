@@ -1,0 +1,20 @@
+{
+  "title": "قطارات المملكة العربية السعودية",
+  "subtitle": "احجز رحلتك بسهولة وأمان",
+  "popularRoutes": "المسارات الشائعة",
+  "specialOffers": "عروض خاصة",
+  "weekendDiscount": "خصم 20% على رحلات نهاية الأسبوع",
+  "bookBeforeMonth": "احجز قبل نهاية الشهر",
+  "familyOffers": "عروض العائلة",
+  "familyDiscount": "خصم خاص للعائلات من 4 أفراد أو أكثر",
+  "loyaltyRewards": "مكافآت المسافر الدائم",
+  "earnPoints": "اكسب نقاط مع كل رحلة",
+  "routes": {
+    "riyadhMakkah": "الرياض → مكة المكرمة",
+    "jeddahMadinah": "جدة → المدينة المنورة",
+    "dammamRiyadh": "الدمام → الرياض",
+    "dailyTrips": "رحلات يومية متعددة",
+    "expressService": "خدمة القطار السريع",
+    "directTrips": "رحلات مباشرة"
+  }
+}

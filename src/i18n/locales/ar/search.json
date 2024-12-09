@@ -1,0 +1,15 @@
+{
+  "title": "البحث عن الرحلات",
+  "from": "من",
+  "to": "إلى",
+  "date": "التاريخ",
+  "passengers": "عدد الركاب",
+  "class": "الدرجة",
+  "searchButton": "بحث عن الرحلات",
+  "noAvailableCities": "لا توجد مدن متاحة",
+  "selectCity": "اختر المدينة",
+  "noResults": "لا توجد رحلات متاحة",
+  "availableSeats": "المقاعد المتاحة",
+  "duration": "مدة الرحلة",
+  "price": "السعر"
+}

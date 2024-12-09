@@ -1,0 +1,20 @@
+{
+  "title": "حجز التذكرة",
+  "passengerDetails": "بيانات المسافر",
+  "seatSelection": "اختيار المقعد",
+  "payment": "الدفع",
+  "confirmation": "تأكيد الحجز",
+  "departureTime": "موعد المغادرة",
+  "arrivalTime": "موعد الوصول",
+  "trainNumber": "رقم القطار",
+  "platform": "رصيف",
+  "coach": "عربة",
+  "seat": "مقعد",
+  "totalPrice": "السعر الإجمالي",
+  "paymentMethod": "طريقة الدفع",
+  "cardNumber": "رقم البطاقة",
+  "expiryDate": "تاريخ الانتهاء",
+  "cvv": "رمز الأمان",
+  "bookingSuccess": "تم الحجز بنجاح",
+  "bookingReference": "رقم الحجز"
+}

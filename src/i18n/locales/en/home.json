@@ -1,0 +1,20 @@
+{
+  "title": "Saudi Arabian Railways",
+  "subtitle": "Book your journey with ease and security",
+  "popularRoutes": "Popular Routes",
+  "specialOffers": "Special Offers",
+  "weekendDiscount": "20% Off Weekend Trips",
+  "bookBeforeMonth": "Book before month end",
+  "familyOffers": "Family Offers",
+  "familyDiscount": "Special discount for families of 4 or more",
+  "loyaltyRewards": "Loyalty Rewards",
+  "earnPoints": "Earn points with every trip",
+  "routes": {
+    "riyadhMakkah": "Riyadh → Makkah",
+    "jeddahMadinah": "Jeddah → Madinah",
+    "dammamRiyadh": "Dammam → Riyadh",
+    "dailyTrips": "Multiple daily trips",
+    "expressService": "Express train service",
+    "directTrips": "Direct trips"
+  }
+}

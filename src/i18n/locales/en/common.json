@@ -1,0 +1,16 @@
+{
+  "search": "Search",
+  "book": "Book",
+  "login": "Login",
+  "register": "Register",
+  "logout": "Logout",
+  "dashboard": "Dashboard",
+  "language": "Language",
+  "seats": "seats available",
+  "submit": "Submit",
+  "back": "Back",
+  "error": "Error",
+  "next": "Next",
+  "cancel": "Cancel",
+  "confirm": "Confirm"
+}

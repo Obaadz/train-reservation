@@ -1,0 +1,15 @@
+{
+  "title": "Search Journeys",
+  "from": "From",
+  "to": "To",
+  "date": "Date",
+  "passengers": "Passengers",
+  "class": "Class",
+  "searchButton": "Search Journeys",
+  "noAvailableCities": "No cities available",
+  "selectCity": "Select city",
+  "noResults": "No journeys available",
+  "availableSeats": "Available Seats",
+  "duration": "Duration",
+  "price": "Price"
+}

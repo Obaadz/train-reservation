@@ -1,0 +1,20 @@
+{
+  "title": "Book Ticket",
+  "passengerDetails": "Passenger Details",
+  "seatSelection": "Select Seat",
+  "payment": "Payment",
+  "confirmation": "Booking Confirmation",
+  "departureTime": "Departure Time",
+  "arrivalTime": "Arrival Time",
+  "trainNumber": "Train Number",
+  "platform": "Platform",
+  "coach": "Coach",
+  "seat": "Seat",
+  "totalPrice": "Total Price",
+  "paymentMethod": "Payment Method",
+  "cardNumber": "Card Number",
+  "expiryDate": "Expiry Date",
+  "cvv": "CVV",
+  "bookingSuccess": "Booking Successful",
+  "bookingReference": "Booking Reference"
+}
