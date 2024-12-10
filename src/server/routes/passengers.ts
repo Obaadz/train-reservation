@@ -68,6 +68,104 @@ router.get('/metrics', authenticateToken, async (req, res) => {
   }
 });
 
+router.post('/:id/reset-password', authenticateToken, async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        message: req.headers['accept-language']?.includes('ar')
+          ? 'غير مصرح'
+          : 'Unauthorized'
+      });
+    }
+
+    const { id } = req.params;
+    const { password } = req.body;
+
+    // Validate input
+    if (!password === undefined) {
+      return res.status(400).json({
+        message: req.headers['accept-language']?.includes('ar')
+          ? 'الرجاء تقديم بيانات لتحديثها'
+          : 'Please provide data to update'
+      });
+    }
+
+    // Find passenger by ID
+    const passenger = await PassengerModel.findById(id);
+    if (!passenger) {
+      return res.status(404).json({
+        message: req.headers['accept-language']?.includes('ar')
+          ? 'المسافر غير موجود'
+          : 'Passenger not found'
+      });
+    }
+
+    await PassengerModel.update(id, { password })
+
+    res.json({
+      message: req.headers['accept-language']?.includes('ar')
+        ? 'تم تحديث بيانات المسافر بنجاح'
+        : 'Passenger data updated successfully'
+    });
+  } catch (error) {
+    console.error('Error updating passenger data:', error);
+    res.status(500).json({
+      message: req.headers['accept-language']?.includes('ar')
+        ? 'خطأ في تحديث بيانات المسافر'
+        : 'Error updating passenger data'
+    });
+  }
+});
+
+router.put('/:id', authenticateToken, async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        message: req.headers['accept-language']?.includes('ar')
+          ? 'غير مصرح'
+          : 'Unauthorized'
+      });
+    }
+
+    const { id } = req.params;
+    const { name, loyalty_points } = req.body;
+
+    // Validate input
+    if (!name && loyalty_points === undefined) {
+      return res.status(400).json({
+        message: req.headers['accept-language']?.includes('ar')
+          ? 'الرجاء تقديم بيانات لتحديثها'
+          : 'Please provide data to update'
+      });
+    }
+
+    // Find passenger by ID
+    const passenger = await PassengerModel.findById(id);
+    if (!passenger) {
+      return res.status(404).json({
+        message: req.headers['accept-language']?.includes('ar')
+          ? 'المسافر غير موجود'
+          : 'Passenger not found'
+      });
+    }
+
+    await PassengerModel.update(id, { name, loyalty_points })
+
+    res.json({
+      message: req.headers['accept-language']?.includes('ar')
+        ? 'تم تحديث بيانات المسافر بنجاح'
+        : 'Passenger data updated successfully'
+    });
+  } catch (error) {
+    console.error('Error updating passenger data:', error);
+    res.status(500).json({
+      message: req.headers['accept-language']?.includes('ar')
+        ? 'خطأ في تحديث بيانات المسافر'
+        : 'Error updating passenger data'
+    });
+  }
+});
+
 // Helper function to calculate most visited city
 function calculateMostVisitedCity(bookings: any[]): string {
   const cityCounts = bookings.reduce((acc: { [key: string]: number }, booking) => {

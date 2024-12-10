@@ -15,7 +15,7 @@ interface DashboardMetrics {
 }
 
 const DashboardStats: React.FC = () => {
-  const { t } = useTranslation(['dashboard']);
+  const { t } = useTranslation(["dashboard"]);
   const api = useApi();
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
   const [loading, setLoading] = useState(true);
@@ -23,10 +23,10 @@ const DashboardStats: React.FC = () => {
   useEffect(() => {
     const fetchMetrics = async () => {
       try {
-        const response = await api.get('/passengers/metrics');
+        const response = await api.get("/passengers/metrics");
         setMetrics(response);
       } catch (error) {
-        console.error('Error fetching metrics:', error);
+        console.error("Error fetching metrics:", error);
       } finally {
         setLoading(false);
       }
@@ -50,52 +50,52 @@ const DashboardStats: React.FC = () => {
 
   const stats = [
     {
-      title: t('totalBookings'),
+      title: t("totalBookings"),
       value: metrics?.totalBookings || 0,
       change: "+12%",
       icon: <Calendar className="w-6 h-6 text-indigo-600" />,
       trend: "up",
     },
     {
-      title: t('activeJourneys'),
+      title: t("activeJourneys"),
       value: metrics?.activeJourneys || 0,
       icon: <Train className="w-6 h-6 text-green-600" />,
       trend: "neutral",
     },
     {
-      title: t('totalSpent'),
+      title: t("totalSpent"),
       value: `${metrics?.totalSpent || 0} SAR`,
       change: "+8%",
       icon: <CreditCard className="w-6 h-6 text-purple-600" />,
       trend: "up",
     },
     {
-      title: t('upcomingTrips'),
+      title: t("upcomingTrips"),
       value: metrics?.upcomingTrips || 0,
       icon: <Clock className="w-6 h-6 text-blue-600" />,
       trend: "neutral",
     },
     {
-      title: t('loyaltyPoints'),
+      title: t("loyaltyPoints"),
       value: metrics?.loyaltyPoints || 0,
       change: "+15%",
       icon: <Award className="w-6 h-6 text-yellow-600" />,
       trend: "up",
     },
     {
-      title: t('mostVisitedCity'),
-      value: metrics?.mostVisitedCity || "-",
+      title: t("mostVisitedCity"),
+      value: "-",
       icon: <MapPin className="w-6 h-6 text-red-600" />,
       trend: "neutral",
     },
     {
-      title: t('completedTrips'),
+      title: t("completedTrips"),
       value: metrics?.completedTrips || 0,
       icon: <Users className="w-6 h-6 text-teal-600" />,
       trend: "neutral",
     },
     {
-      title: t('averagePrice'),
+      title: t("averagePrice"),
       value: `${metrics?.averagePrice || 0} SAR`,
       icon: <TrendingUp className="w-6 h-6 text-orange-600" />,
       trend: "neutral",
@@ -114,21 +114,25 @@ const DashboardStats: React.FC = () => {
               <p className="text-sm text-gray-600">{stat.title}</p>
               <p className="text-2xl font-semibold mt-1">{stat.value}</p>
               {stat.change && (
-                <p className={`text-sm mt-1 ${
-                  stat.trend === 'up' ? 'text-green-600' : 
-                  stat.trend === 'down' ? 'text-red-600' : 
-                  'text-gray-600'
-                }`}>
-                  {stat.change} {t('fromLastMonth')}
+                <p
+                  className={`text-sm mt-1 ${
+                    stat.trend === "up"
+                      ? "text-green-600"
+                      : stat.trend === "down"
+                      ? "text-red-600"
+                      : "text-gray-600"
+                  }`}
+                >
+                  {stat.change} {t("fromLastMonth")}
                 </p>
               )}
             </div>
             <div className="p-3 bg-gray-50 rounded-full">{stat.icon}</div>
           </div>
-          
-          {stat.trend === 'up' && (
+
+          {stat.trend === "up" && (
             <div className="mt-4 h-1 bg-gray-200 rounded">
-              <div className="h-1 bg-green-500 rounded" style={{ width: '70%' }}></div>
+              <div className="h-1 bg-green-500 rounded" style={{ width: "70%" }}></div>
             </div>
           )}
         </div>

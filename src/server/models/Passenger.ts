@@ -65,6 +65,12 @@ export const PassengerModel = {
       updateData.last_login = new Date(updates.last_login);
     }
 
+    if (updates.loyalty_points) {
+      await this.updateLoyaltyPoints(pid, updates.loyalty_points);
+
+      delete updateData.loyalty_points;
+    }
+
     const setClauses = Object.entries(updateData)
       .map(([key]) => `${key} = ?`)
       .join(', ');

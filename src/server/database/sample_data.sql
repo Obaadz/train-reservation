@@ -20,7 +20,7 @@ VALUES
 -- Insert sample data into employees
 INSERT INTO employees (eid, first_name, middle_name, last_name, email, password, salary, contract_type, shift_type, branch_location, role, station_code, hire_date, can_login)
 VALUES
-('E001', 'أحمد', 'عبدالله', 'الزهراني', 'ahmad.zahrani@example.com', MD5('Password123'), 7000.00, 'FULL_TIME', 'MORNING', 'Riyadh Station', 'MANAGER', 'ST001', '2020-03-01', TRUE),
+('E001', 'أحمد', 'عبدالله', 'الزهراني', 'admin@example.com', "$10$gTjdEiRTBw9lETcRzht0t.h.RXARg.iUCDRE5W/L1OfwNTiQw74be", 7000.00, 'FULL_TIME', 'MORNING', 'Riyadh Station', 'MANAGER', 'ST001', '2020-03-01', TRUE),
 ('E002', 'سالم', 'محمد', 'الغامدي', 'salem.gamdi@example.com', MD5('SecurePass!'), 5000.00, 'PART_TIME', 'EVENING', 'Jeddah Station', 'TECHNICIAN', 'ST002', '2021-05-10', TRUE);
 
 -- Insert sample data into employee_schedules
