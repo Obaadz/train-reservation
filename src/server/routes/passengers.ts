@@ -5,14 +5,46 @@ import { authenticateToken } from '../middleware/auth';
 
 const router = Router();
 
+// Get all passengers
+router.get('/', authenticateToken, async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        message: req.headers['accept-language']?.includes('ar')
+          ? 'غير مصرح'
+          : 'Unauthorized'
+      });
+    }
+
+    // Fetch all passengers
+    const passengers = await PassengerModel.findAll();
+
+    res.json(passengers);
+  } catch (error) {
+    console.error('Error fetching passengers:', error);
+    res.status(500).json({
+      message: req.headers['accept-language']?.includes('ar')
+        ? 'خطأ في جلب المسافرين'
+        : 'Error fetching passengers'
+    });
+  }
+});
+
 // Get passenger metrics
 router.get('/metrics', authenticateToken, async (req, res) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({
+        message: req.headers['accept-language']?.includes('ar')
+          ? 'غير مصرح'
+          : 'Unauthorized'
+      });
+    }
     const passengerId = req.user.id;
 
     // Get all bookings for the passenger
     const bookings = await BookingModel.findByPassenger(passengerId);
-    
+
     // Calculate metrics
     const metrics = {
       totalBookings: bookings.length,
@@ -21,7 +53,7 @@ router.get('/metrics', authenticateToken, async (req, res) => {
       upcomingTrips: bookings.filter(b => b.booking_status === 'CONFIRMED' && new Date(b.departure_time) > new Date()).length,
       loyaltyPoints: req.user.loyaltyPoints || 0,
       mostVisitedCity: calculateMostVisitedCity(bookings),
-      completedTrips: bookings.filter(b => b.booking_status === 'COMPLETED').length,
+      completedTrips: bookings.filter(b => b.booking_status === 'CONFIRMED').length,
       averagePrice: bookings.length ? Math.round(bookings.reduce((sum, b) => sum + b.amount, 0) / bookings.length) : 0
     };
 
@@ -45,7 +77,7 @@ function calculateMostVisitedCity(bookings: any[]): string {
   }, {});
 
   return Object.entries(cityCounts)
-    .sort(([,a], [,b]) => b - a)[0]?.[0] || '-';
+    .sort(([, a], [, b]) => b - a)[0]?.[0] || '-';
 }
 
 export default router;

@@ -1,17 +1,18 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Home from './pages/Home';
-import Search from './pages/Search';
-import Booking from './pages/Booking';
-import Login from './pages/Login';
-import EmployeeLogin from './pages/EmployeeLogin';
-import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
-import ProtectedRoute from './components/ProtectedRoute';
-import { AuthProvider } from './contexts/AuthContext';
-import { ToastProvider } from './contexts/ToastContext';
-import ErrorBoundary from './components/common/ErrorBoundary';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Home from "./pages/Home";
+import Search from "./pages/Search";
+import Booking from "./pages/Booking";
+import Login from "./pages/Login";
+import EmployeeLogin from "./pages/EmployeeLogin";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider } from "./contexts/AuthContext";
+import { ToastProvider } from "./contexts/ToastContext";
+import ErrorBoundary from "./components/common/ErrorBoundary";
+import EmployeeDashboard from "./components/dashboard/employee/EmployeeDashboard";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
                   <Route path="/booking/:id" element={<Booking />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/employee/login" element={<EmployeeLogin />} />
+                  <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
                   <Route path="/register" element={<Register />} />
                   <Route
                     path="/dashboard"

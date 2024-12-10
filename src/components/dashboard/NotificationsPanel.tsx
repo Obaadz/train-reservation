@@ -83,7 +83,7 @@ const NotificationsPanel: React.FC = () => {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
           <AlertCircle className="w-5 h-5 text-indigo-600" />
-          <h2 className="text-lg font-semibold">{t("notifications.title")}</h2>
+          <h2 className="text-lg font-semibold">{t("notifications:title")}</h2>
         </div>
         <Button
           onClick={() => {

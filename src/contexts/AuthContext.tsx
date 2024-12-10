@@ -1,13 +1,16 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 interface User {
   id: string;
   name: string;
   email: string;
   role: string;
+  userType: "passenger" | "employee";
   loyaltyPoints?: number;
+  loyaltyStatus?: string;
+  station?: string;
 }
 
 interface AuthContextType {
@@ -16,6 +19,7 @@ interface AuthContextType {
   login: (token: string) => void;
   logout: () => void;
   loading: boolean;
+  getToken: () => string | null;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -27,14 +31,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
       try {
         const decoded = jwtDecode<User>(token);
-        // Check if token is expired
         const currentTime = Date.now() / 1000;
         if ((decoded as any).exp < currentTime) {
-          localStorage.removeItem('token');
+          localStorage.removeItem("token");
           setUser(null);
           setIsAuthenticated(false);
         } else {
@@ -42,7 +45,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setIsAuthenticated(true);
         }
       } catch (error) {
-        localStorage.removeItem('token');
+        localStorage.removeItem("token");
         setUser(null);
         setIsAuthenticated(false);
       }
@@ -50,19 +53,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setLoading(false);
   }, []);
 
-  const login = async (token: string) => {
-    localStorage.setItem('token', token);
+  const login = (token: string) => {
+    localStorage.setItem("token", token);
     const decoded = jwtDecode<User>(token);
     setUser(decoded);
     setIsAuthenticated(true);
-    navigate('/dashboard');
+
+    // Redirect based on user type
+    if (decoded.userType === "employee") {
+      navigate("/employee/dashboard");
+    } else {
+      navigate("/dashboard");
+    }
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
     setUser(null);
     setIsAuthenticated(false);
-    navigate('/');
+    navigate("/login");
+  };
+
+  const getToken = () => {
+    return localStorage.getItem("token");
   };
 
   if (loading) {
@@ -74,7 +87,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout, loading }}>
+    <AuthContext.Provider
+      value={{
+        isAuthenticated,
+        user,
+        login,
+        logout,
+        loading,
+        getToken,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -83,7 +105,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

@@ -1,16 +1,7 @@
 import pool from '../config/database';
-import { ResultSetHeader, RowDataPacket } from 'mysql2';
+import { ResultSetHeader } from 'mysql2';
 import bcrypt from 'bcryptjs';
-
-export interface Passenger extends RowDataPacket {
-  pid: string;
-  name: string;
-  email: string;
-  password: string;
-  loyalty_status: string;
-  loyalty_points: number;
-  created_at: Date;
-}
+import { Passenger, PassengerUpdate, BaseModel, LoyaltyStatus } from '../types/database';
 
 export const PassengerModel = {
   async findAll(): Promise<Passenger[]> {
@@ -34,23 +25,64 @@ export const PassengerModel = {
     return rows[0] || null;
   },
 
-  async create(passenger: Omit<Passenger, 'RowDataPacket'>): Promise<string> {
-    const hashedPassword = await bcrypt.hash(passenger.password, 10);
+  async create(data: {
+    pid: string;
+    name: string;
+    email: string;
+    password: string;
+    phone?: string;
+    loyalty_status?: LoyaltyStatus;
+    loyalty_points?: number;
+  }): Promise<string> {
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+
     const [result] = await pool.query<ResultSetHeader>(
-      'INSERT INTO passengers (pid, name, email, password, loyalty_status, loyalty_points) VALUES (?, ?, ?, ?, ?, ?)',
-      [passenger.pid, passenger.name, passenger.email, hashedPassword, passenger.loyalty_status, passenger.loyalty_points]
+      `INSERT INTO passengers 
+       (pid, name, email, password, phone, loyalty_status, loyalty_points) 
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [
+        data.pid,
+        data.name,
+        data.email,
+        hashedPassword,
+        data.phone || null,
+        data.loyalty_status || 'BRONZE',
+        data.loyalty_points || 0
+      ]
     );
-    return passenger.pid;
+
+    return data.pid;
   },
 
-  async update(pid: string, updates: Partial<Passenger>): Promise<void> {
-    const setClauses = Object.keys(updates)
-      .map(key => `${key} = ?`)
+  async update(pid: string, updates: PassengerUpdate): Promise<void> {
+    const updateData: Record<string, any> = { ...updates };
+
+    if (updates.password) {
+      updateData.password = await bcrypt.hash(updates.password, 10);
+    }
+
+    if (updates.last_login) {
+      updateData.last_login = new Date(updates.last_login);
+    }
+
+    const setClauses = Object.entries(updateData)
+      .map(([key]) => `${key} = ?`)
       .join(', ');
+
+    const values = Object.values(updateData).map(value =>
+      value instanceof Date ? value.toISOString().slice(0, 19).replace('T', ' ') : value
+    );
 
     await pool.query(
       `UPDATE passengers SET ${setClauses} WHERE pid = ?`,
-      [...Object.values(updates), pid]
+      [...values, pid]
+    );
+  },
+
+  async updateLastLogin(pid: string): Promise<void> {
+    await pool.query(
+      'UPDATE passengers SET last_login = CURRENT_TIMESTAMP WHERE pid = ?',
+      [pid]
     );
   },
 
@@ -60,7 +92,6 @@ export const PassengerModel = {
       [points, pid]
     );
 
-    // Update loyalty status based on total points
     await pool.query(`
       UPDATE passengers 
       SET loyalty_status = 
@@ -72,5 +103,9 @@ export const PassengerModel = {
         END
       WHERE pid = ?
     `, [pid]);
+  },
+
+  async validatePassword(passenger: Passenger, password: string): Promise<boolean> {
+    return bcrypt.compare(password, passenger.password);
   }
 };

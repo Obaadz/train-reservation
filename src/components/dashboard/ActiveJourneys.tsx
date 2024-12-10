@@ -17,8 +17,8 @@ const mockJourneys: Journey[] = [
   {
     id: "J001",
     trainNumber: "TRN001",
-    from: "القاهرة",
-    to: "الإسكندرية",
+    from: "الرياض",
+    to: "الدمام",
     departureTime: "08:00",
     arrivalTime: "10:15",
     occupancy: 85,
@@ -27,8 +27,8 @@ const mockJourneys: Journey[] = [
   {
     id: "J002",
     trainNumber: "TRN002",
-    from: "الإسكندرية",
-    to: "أسوان",
+    from: "الرياض",
+    to: "حائل",
     departureTime: "09:30",
     arrivalTime: "15:45",
     occupancy: 72,

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { LogIn, Mail, Lock, Users, Building } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../contexts/ToastContext";
@@ -18,36 +18,41 @@ const Login: React.FC = () => {
   const { t } = useTranslation(["auth"]);
   const { login } = useAuth();
   const { showToast } = useToast();
-  const navigate = useNavigate();
-  const [userType, setUserType] = useState<'passenger' | 'employee'>('passenger');
+  const [userType, setUserType] = useState<"passenger" | "employee">("passenger");
 
-  const { values, errors, isSubmitting, handleChange, handleSubmit } = useForm<LoginForm>({
-    initialValues: {
-      email: "",
-      password: "",
-    },
-    validationRules: loginValidationRules,
-    onSubmit: async (values) => {
-      try {
-        const response = await fetch("http://localhost:3000/api/auth/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...values, userType }),
-        });
+  const { values, errors, touched, isSubmitting, isValid, handleChange, handleSubmit } =
+    useForm<LoginForm>({
+      initialValues: {
+        email: "",
+        password: "",
+      },
+      validationRules: loginValidationRules,
+      onSubmit: async (values) => {
+        try {
+          const response = await fetch(
+            `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/auth/login`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Accept-Language": localStorage.getItem("i18nextLng") || "ar",
+              },
+              body: JSON.stringify({ ...values, userType }),
+            }
+          );
 
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data.message || t("errors.loginFailed"));
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.message || t("errors.loginFailed"));
+          }
+
+          login(data.token);
+          showToast(data.message || t("loginSuccess"), "success");
+        } catch (err) {
+          showToast(err instanceof Error ? err.message : t("errors.loginFailed"), "error");
         }
-
-        login(data.token);
-        showToast(t("loginSuccess"), "success");
-        navigate("/dashboard");
-      } catch (err) {
-        showToast(err instanceof Error ? err.message : t("errors.loginFailed"), "error");
-      }
-    },
-  });
+      },
+    });
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -55,24 +60,24 @@ const Login: React.FC = () => {
         <div className="text-center">
           <LogIn className="mx-auto h-12 w-12 text-indigo-600" />
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            {t(userType === 'passenger' ? "loginTitle" : "employeeLoginTitle")}
+            {t(userType === "passenger" ? "loginTitle" : "employeeLoginTitle")}
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            {t(userType === 'passenger' ? "loginSubtitle" : "employeeLoginSubtitle")}
+            {t(userType === "passenger" ? "loginSubtitle" : "employeeLoginSubtitle")}
           </p>
         </div>
 
         <div className="flex justify-center gap-4">
           <Button
-            variant={userType === 'passenger' ? 'primary' : 'outline'}
-            onClick={() => setUserType('passenger')}
+            variant={userType === "passenger" ? "primary" : "outline"}
+            onClick={() => setUserType("passenger")}
             leftIcon={<Users className="w-4 h-4" />}
           >
             {t("passengerLogin")}
           </Button>
           <Button
-            variant={userType === 'employee' ? 'primary' : 'outline'}
-            onClick={() => setUserType('employee')}
+            variant={userType === "employee" ? "primary" : "outline"}
+            onClick={() => setUserType("employee")}
             leftIcon={<Building className="w-4 h-4" />}
           >
             {t("employeeLogin")}
@@ -80,16 +85,17 @@ const Login: React.FC = () => {
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
+          <div className="rounded-md shadow-sm space-y-4">
             <FormField
               label={t("email")}
               type="email"
               name="email"
               value={values.email}
               onChange={(e) => handleChange("email", e.target.value)}
-              error={errors.email}
+              error={touched.email ? errors.email : undefined}
               icon={<Mail className="h-5 w-5 text-gray-400" />}
               placeholder={t("emailPlaceholder")}
+              required
             />
 
             <FormField
@@ -98,9 +104,10 @@ const Login: React.FC = () => {
               name="password"
               value={values.password}
               onChange={(e) => handleChange("password", e.target.value)}
-              error={errors.password}
+              error={touched.password ? errors.password : undefined}
               icon={<Lock className="h-5 w-5 text-gray-400" />}
               placeholder={t("passwordPlaceholder")}
+              required
             />
           </div>
 
@@ -127,11 +134,17 @@ const Login: React.FC = () => {
             </div>
           </div>
 
-          <Button type="submit" loading={isSubmitting} fullWidth size="lg">
+          <Button
+            type="submit"
+            loading={isSubmitting}
+            fullWidth
+            size="lg"
+            disabled={!isValid || isSubmitting}
+          >
             {t("loginButton")}
           </Button>
 
-          {userType === 'passenger' && (
+          {userType === "passenger" && (
             <div className="text-center">
               <p className="text-sm text-gray-600">
                 {t("noAccount")}{" "}

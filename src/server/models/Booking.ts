@@ -21,13 +21,13 @@ export const BookingModel = {
       `INSERT INTO bookings 
        (booking_id, passenger_id, journey_id, train_id, coach_number, 
         seat_number, booking_status, booking_date, payment_status, 
-        payment_method, amount) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        payment_method, amount, class_id) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         booking.booking_id, booking.passenger_id, booking.journey_id,
         booking.train_id, booking.coach_number, booking.seat_number,
         booking.booking_status, booking.booking_date, booking.payment_status,
-        booking.payment_method, booking.amount
+        booking.payment_method, booking.amount, booking.class_id
       ]
     );
     return booking.booking_id;

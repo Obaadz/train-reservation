@@ -110,7 +110,7 @@ const NotificationPanel: React.FC = () => {
         <div className="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-lg border border-gray-200 z-50 scale-in">
           <div className="p-4 border-b">
             <div className="flex items-center justify-between">
-              <h3 className="font-medium">{t("notifications.title")}</h3>
+              <h3 className="font-medium">{t("notifications:title")}</h3>
               <button
                 onClick={() => setIsOpen(false)}
                 className="p-1 hover:bg-gray-100 rounded-full"
@@ -124,7 +124,7 @@ const NotificationPanel: React.FC = () => {
             {loading ? (
               <div className="p-4 text-center text-gray-500">{t("notifications.loading")}</div>
             ) : notifications.length === 0 ? (
-              <div className="p-4 text-center text-gray-500">{t("notifications.empty")}</div>
+              <div className="p-4 text-center text-gray-500">{t("notifications:empty")}</div>
             ) : (
               notifications.map((notification) => (
                 <div

@@ -6,6 +6,9 @@ const router = Router();
 
 router.get('/', authenticateToken, async (req, res) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
     const notifications = await NotificationModel.findByPassenger(req.user.id);
     res.json(notifications);
   } catch (error) {

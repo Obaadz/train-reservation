@@ -1,39 +1,62 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { JourneyModel } from '../models/Journey';
 import { authenticateToken } from '../middleware/auth';
+import { JourneySearchParams, JourneySearchResult, JourneyDetails } from '../types/journey';
 
 const router = Router();
 
-router.get('/search', async (req, res) => {
+// Search journeys
+router.get('/search', async (req: Request, res: Response) => {
   try {
-    const { from, to, date } = req.query;
+    const { from, to, date, passengers = '1', classId } = req.query;
     const isArabic = req.headers['accept-language']?.includes('ar');
 
     if (!from || !to || !date) {
-      return res.status(400).json({ 
-        message: isArabic ? 'جميع الحقول مطلوبة' : 'All fields are required' 
+      return res.status(400).json({
+        message: isArabic ? 'جميع الحقول مطلوبة' : 'All fields are required'
       });
     }
 
+    const searchParams: JourneySearchParams = {
+      fromStation: from as string,
+      toStation: to as string,
+      date: date as string,
+      passengers: parseInt(passengers as string, 10),
+      classId: classId as string
+    };
+
     const journeys = await JourneyModel.searchJourneys(
-      from as string,
-      to as string,
-      date as string
+      searchParams.fromStation,
+      searchParams.toStation,
+      searchParams.date
     );
 
-    // Enhance journey data with available seats
-    const enhancedJourneys = await Promise.all(journeys.map(async journey => {
-      const availableSeats = await JourneyModel.getAvailableSeats(journey.jid);
-      return {
-        ...journey,
-        availableSeats
-      };
-    }));
+    // If classId is provided, calculate prices and available seats for that class only
+    const journeysWithDetails: JourneySearchResult[] = await Promise.all(
+      journeys.map(async (journey) => {
+        const availableClasses = await Promise.all(
+          Object.keys(journey.available_classes).map(async (classId) => {
+            const price = await JourneyModel.calculatePrice(journey.jid, classId);
+            const availableSeats = await JourneyModel.getAvailableSeats(journey.jid, classId);
+            return {
+              classId,
+              price,
+              availableSeats: availableSeats.length
+            };
+          })
+        );
 
-    res.json(enhancedJourneys);
+        return {
+          ...journey,
+          available_classes: availableClasses
+        };
+      })
+    );
+
+    res.json(journeysWithDetails);
   } catch (error) {
     console.error('Journey search error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: req.headers['accept-language']?.includes('ar')
         ? 'خطأ في البحث عن الرحلات'
         : 'Error searching journeys'
@@ -41,31 +64,120 @@ router.get('/search', async (req, res) => {
   }
 });
 
-router.get('/:id', authenticateToken, async (req, res) => {
+// Get journey details
+router.get('/:id', authenticateToken, async (req: Request, res: Response) => {
   try {
-    const journey = await JourneyModel.findById(req.params.id);
+    const { id } = req.params;
+    const { classId } = req.query;
+    const isArabic = req.headers['accept-language']?.includes('ar');
+
+    const journey = await JourneyModel.findById(id);
     if (!journey) {
-      return res.status(404).json({ 
-        message: req.headers['accept-language']?.includes('ar')
+      return res.status(404).json({
+        message: isArabic
           ? 'الرحلة غير موجودة'
           : 'Journey not found'
       });
     }
 
-    const stations = await JourneyModel.getJourneyStations(req.params.id);
-    const availableSeats = await JourneyModel.getAvailableSeats(req.params.id);
+    const stations = await JourneyModel.getJourneyStations(id);
 
-    res.json({ 
-      ...journey, 
-      stations,
-      availableSeats
-    });
+    // Get available seats for all classes or specific class
+    const classes = await Promise.all(
+      Object.keys(journey.class_capacities).map(async (cls) => {
+        if (classId && cls !== classId) return null;
+        const price = await JourneyModel.calculatePrice(id, cls);
+        const availableSeats = await JourneyModel.getAvailableSeats(id, cls);
+        return {
+          classId: cls,
+          price,
+          availableSeats: availableSeats.length
+        };
+      })
+    );
+
+    const journeyDetails: JourneyDetails = {
+      journey: {
+        jid: journey.jid,
+        train_id: journey.train_id,
+        status: journey.status,
+        base_price: journey.base_price
+      },
+      stations: stations.map(station => ({
+        station_code: station.station_code,
+        arrival_time: station.arrival_time,
+        departure_time: station.departure_time,
+        platform_number: station.platform_number,
+        sequence_number: station.sequence_number
+      })),
+      classes: classes.filter(Boolean) as {
+        classId: string;
+        price: number;
+        availableSeats: number;
+      }[]
+    };
+
+    res.json(journeyDetails);
   } catch (error) {
     console.error('Journey details error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: req.headers['accept-language']?.includes('ar')
         ? 'خطأ في جلب تفاصيل الرحلة'
         : 'Error fetching journey details'
+    });
+  }
+});
+
+// Get available seats
+router.get('/:id/seats', authenticateToken, async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { classId } = req.query;
+    const isArabic = req.headers['accept-language']?.includes('ar');
+
+    if (!classId) {
+      return res.status(400).json({
+        message: isArabic
+          ? 'رقم الدرجة مطلوب'
+          : 'Class ID is required'
+      });
+    }
+
+    const availableSeats = await JourneyModel.getAvailableSeats(id, classId as string);
+    res.json({ seats: availableSeats });
+  } catch (error) {
+    console.error('Error fetching available seats:', error);
+    res.status(500).json({
+      message: req.headers['accept-language']?.includes('ar')
+        ? 'خطأ في جلب المقاعد المتاحة'
+        : 'Error fetching available seats'
+    });
+  }
+});
+
+// Validate seat
+router.get('/:id/validate-seat', authenticateToken, async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { seatNumber } = req.query;
+    const isArabic = req.headers['accept-language']?.includes('ar');
+
+    if (!seatNumber) {
+      return res.status(400).json({
+        message: isArabic
+          ? 'رقم المقعد مطلوب'
+          : 'Seat number is required'
+      });
+    }
+
+    const isValid = await JourneyModel.checkSeatAvailability(id, seatNumber as string);
+    res.json({ isValid });
+  } catch (error) {
+    console.error('Error validating seat:', error);
+    res.status(500).json({
+      message: req.headers['accept-language']?.includes('ar')
+        ? 'خطأ في التحقق من المقعد'
+        : 'Error validating seat'
     });
   }
 });

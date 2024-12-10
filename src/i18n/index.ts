@@ -31,7 +31,11 @@ i18n
         booking: arBooking,
         auth: arAuth,
         dashboard: arDashboard,
-        features: arFeatures
+        features: arFeatures,
+        notifications: {
+          title: "إشعارات",
+          empty: "لا توجد إشعارات جديدة"
+        }
       },
       en: {
         common: enCommon,
@@ -40,7 +44,11 @@ i18n
         booking: enBooking,
         auth: enAuth,
         dashboard: enDashboard,
-        features: enFeatures
+        features: enFeatures,
+        notifications: {
+          title: "Notifications",
+          empty: "No new notifications"
+        }
       }
     },
     lng: 'ar', // Default language

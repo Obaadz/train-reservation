@@ -22,7 +22,7 @@ const Register: React.FC = () => {
   const { showToast } = useToast();
   const navigate = useNavigate();
 
-  const { values, errors, isSubmitting, handleChange, handleSubmit } = useForm<RegisterForm>({
+  const { values, errors, touched, isSubmitting, isValid, handleChange, handleSubmit } = useForm<RegisterForm>({
     initialValues: {
       name: "",
       email: "",
@@ -32,9 +32,12 @@ const Register: React.FC = () => {
     validationRules: registerValidationRules,
     onSubmit: async (values) => {
       try {
-        const response = await fetch("http://localhost:3000/api/auth/register", {
+        const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/auth/register`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json",
+            "Accept-Language": localStorage.getItem("i18nextLng") || "ar"
+          },
           body: JSON.stringify({
             name: values.name,
             email: values.email,
@@ -43,6 +46,7 @@ const Register: React.FC = () => {
         });
 
         const data = await response.json();
+        
         if (!response.ok) {
           throw new Error(data.message || t("errors.registerFailed"));
         }
@@ -51,7 +55,10 @@ const Register: React.FC = () => {
         showToast(t("registerSuccess"), "success");
         navigate("/dashboard");
       } catch (err) {
-        showToast(err instanceof Error ? err.message : t("errors.registerFailed"), "error");
+        showToast(
+          err instanceof Error ? err.message : t("errors.registerFailed"), 
+          "error"
+        );
       }
     },
   });
@@ -61,21 +68,26 @@ const Register: React.FC = () => {
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <UserPlus className="mx-auto h-12 w-12 text-indigo-600" />
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">{t("registerTitle")}</h2>
-          <p className="mt-2 text-sm text-gray-600">{t("registerSubtitle")}</p>
+          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+            {t("registerTitle")}
+          </h2>
+          <p className="mt-2 text-sm text-gray-600">
+            {t("registerSubtitle")}
+          </p>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
+          <div className="rounded-md shadow-sm space-y-4">
             <FormField
               label={t("name")}
               type="text"
               name="name"
               value={values.name}
               onChange={(e) => handleChange("name", e.target.value)}
-              error={errors.name}
+              error={touched.name ? errors.name : undefined}
               icon={<User className="h-5 w-5 text-gray-400" />}
               placeholder={t("namePlaceholder")}
+              required
             />
 
             <FormField
@@ -84,9 +96,10 @@ const Register: React.FC = () => {
               name="email"
               value={values.email}
               onChange={(e) => handleChange("email", e.target.value)}
-              error={errors.email}
+              error={touched.email ? errors.email : undefined}
               icon={<Mail className="h-5 w-5 text-gray-400" />}
               placeholder={t("emailPlaceholder")}
+              required
             />
 
             <FormField
@@ -95,9 +108,10 @@ const Register: React.FC = () => {
               name="password"
               value={values.password}
               onChange={(e) => handleChange("password", e.target.value)}
-              error={errors.password}
+              error={touched.password ? errors.password : undefined}
               icon={<Lock className="h-5 w-5 text-gray-400" />}
               placeholder={t("passwordPlaceholder")}
+              required
             />
 
             <FormField
@@ -106,20 +120,31 @@ const Register: React.FC = () => {
               name="confirmPassword"
               value={values.confirmPassword}
               onChange={(e) => handleChange("confirmPassword", e.target.value)}
-              error={errors.confirmPassword}
+              error={touched.confirmPassword ? errors.confirmPassword : undefined}
               icon={<Lock className="h-5 w-5 text-gray-400" />}
               placeholder={t("confirmPasswordPlaceholder")}
+              required
             />
           </div>
 
-          <Button type="submit" loading={isSubmitting} fullWidth size="lg">
+          <Button 
+            type="submit" 
+            loading={isSubmitting} 
+            fullWidth 
+            size="lg"
+            disabled={!isValid || isSubmitting}
+            className={`${!isValid || isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
             {t("registerButton")}
           </Button>
 
           <div className="text-center">
             <p className="text-sm text-gray-600">
               {t("hasAccount")}{" "}
-              <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
+              <Link 
+                to="/login" 
+                className="font-medium text-indigo-600 hover:text-indigo-500"
+              >
                 {t("loginNow")}
               </Link>
             </p>

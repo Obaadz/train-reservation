@@ -1,15 +1,15 @@
-type ValidationRule = {
-  test: (value: any) => boolean;
+export type ValidationRule = {
+  test: (value: any, formValues?: any) => boolean;
   message: string;
 };
 
-type ValidationRules = {
+export type ValidationRules = {
   [key: string]: ValidationRule[];
 };
 
-export const validateField = (value: any, rules: ValidationRule[]): string[] => {
+export const validateField = (value: any, rules: ValidationRule[], formValues?: any): string[] => {
   return rules
-    .filter(rule => !rule.test(value))
+    .filter(rule => !rule.test(value, formValues))
     .map(rule => rule.message);
 };
 
@@ -17,7 +17,7 @@ export const validateForm = (values: any, rules: ValidationRules): { [key: strin
   const errors: { [key: string]: string[] } = {};
   
   Object.keys(rules).forEach(field => {
-    const fieldErrors = validateField(values[field], rules[field]);
+    const fieldErrors = validateField(values[field], rules[field], values);
     if (fieldErrors.length > 0) {
       errors[field] = fieldErrors;
     }
@@ -38,12 +38,12 @@ export const commonRules = {
   }),
   
   minLength: (length: number, message: string): ValidationRule => ({
-    test: value => value.length >= length,
+    test: value => value && value.length >= length,
     message
   }),
   
   maxLength: (length: number, message: string): ValidationRule => ({
-    test: value => value.length <= length,
+    test: value => value && value.length <= length,
     message
   }),
   

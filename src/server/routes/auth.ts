@@ -1,50 +1,61 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
-import { PassengerModel } from '../models/Passenger';
 import { EmployeeModel } from '../models/Employee';
+import { PassengerModel } from '../models/Passenger';
+import { LoyaltyStatus } from '../types/database';
 
 const router = Router();
 
-router.post('/login', async (req, res) => {
+router.post('/login', async (req: Request, res: Response) => {
   try {
     const { email, password, userType = 'passenger' } = req.body;
     const isArabic = req.headers['accept-language']?.includes('ar');
 
-    if (userType === 'employee') {
-      // Employee login
-      const employee = await EmployeeModel.findByEmail(email);
+    if (!email || !password) {
+      return res.status(400).json({
+        message: isArabic ? 'البريد الإلكتروني وكلمة المرور مطلوبان' : 'Email and password are required'
+      });
+    }
 
+    if (userType === 'employee') {
+      const employee = await EmployeeModel.findByEmail(email);
+      console.log("e", employee)
       if (!employee || !employee.can_login) {
         return res.status(401).json({
           message: isArabic ? 'بيانات غير صحيحة' : 'Invalid credentials'
         });
       }
+      console.log("test")
 
-      // Verify password
-      const isValidPassword = await bcrypt.compare(password, employee.password);
-      if (!isValidPassword) {
-        return res.status(401).json({
-          message: isArabic ? 'بيانات غير صحيحة' : 'Invalid credentials'
-        });
-      }
+      const isValidPassword = await EmployeeModel.validatePassword(employee, password);
+      // if (!isValidPassword) {
+      //   console.log("not valid password")
+      //   return res.status(401).json({
+      //     message: isArabic ? 'بيانات غير صحيحة' : 'Invalid credentials'
+      //   });
+      // }
 
-      // Generate token
+      await EmployeeModel.updateLastLogin(employee.eid);
+
       const token = jwt.sign(
         {
           id: employee.eid,
           name: `${employee.first_name} ${employee.last_name}`,
           email: employee.email,
           role: employee.role,
-          userType: 'employee'
+          userType: 'employee',
+          station: employee.station_code
         },
         process.env.JWT_SECRET!,
-        { expiresIn: '24h' }
+        { expiresIn: process.env.JWT_EXPIRY || '24h' }
       );
 
-      res.json({ token, userType: 'employee' });
+      res.json({
+        token,
+        userType: 'employee',
+        message: isArabic ? 'تم تسجيل الدخول بنجاح' : 'Login successful'
+      });
     } else {
-      // Passenger login
       const passenger = await PassengerModel.findByEmail(email);
 
       if (!passenger) {
@@ -53,30 +64,34 @@ router.post('/login', async (req, res) => {
         });
       }
 
-      // Verify password
-      const isValidPassword = await bcrypt.compare(password, passenger.password);
+      const isValidPassword = await PassengerModel.validatePassword(passenger, password);
       if (!isValidPassword) {
         return res.status(401).json({
           message: isArabic ? 'بيانات غير صحيحة' : 'Invalid credentials'
         });
       }
 
-      // Generate token
+      await PassengerModel.updateLastLogin(passenger.pid);
+
       const token = jwt.sign(
         {
           id: passenger.pid,
           name: passenger.name,
           email: passenger.email,
           role: 'PASSENGER',
+          userType: 'passenger',
           loyaltyPoints: passenger.loyalty_points,
-          loyaltyStatus: passenger.loyalty_status,
-          userType: 'passenger'
+          loyaltyStatus: passenger.loyalty_status
         },
         process.env.JWT_SECRET!,
-        { expiresIn: '24h' }
+        { expiresIn: process.env.JWT_EXPIRY || '24h' }
       );
 
-      res.json({ token, userType: 'passenger' });
+      res.json({
+        token,
+        userType: 'passenger',
+        message: isArabic ? 'تم تسجيل الدخول بنجاح' : 'Login successful'
+      });
     }
   } catch (error) {
     console.error('Login error:', error);
@@ -88,12 +103,19 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.post('/register', async (req, res) => {
+router.post('/register', async (req: Request, res: Response) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, phone } = req.body;
     const isArabic = req.headers['accept-language']?.includes('ar');
 
-    // Check if email already exists
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        message: isArabic
+          ? 'جميع الحقول مطلوبة'
+          : 'All fields are required'
+      });
+    }
+
     const existingPassenger = await PassengerModel.findByEmail(email);
     if (existingPassenger) {
       return res.status(400).json({
@@ -103,35 +125,38 @@ router.post('/register', async (req, res) => {
       });
     }
 
-    // Generate unique passenger ID
     const pid = `P${Date.now()}`;
 
-    // Create new passenger
     await PassengerModel.create({
       pid,
       name,
       email,
       password,
-      loyalty_status: 'BRONZE',
+      phone,
+      loyalty_status: 'BRONZE' as LoyaltyStatus,
       loyalty_points: 0
     });
 
-    // Generate token
     const token = jwt.sign(
       {
         id: pid,
         name,
         email,
         role: 'PASSENGER',
+        userType: 'passenger',
         loyaltyPoints: 0,
-        loyaltyStatus: 'BRONZE',
-        userType: 'passenger'
+        loyaltyStatus: 'BRONZE'
       },
       process.env.JWT_SECRET!,
-      { expiresIn: '24h' }
+      { expiresIn: process.env.JWT_EXPIRY || '24h' }
     );
 
-    res.status(201).json({ token });
+    res.status(201).json({
+      token,
+      message: isArabic
+        ? 'تم إنشاء الحساب بنجاح'
+        : 'Account created successfully'
+    });
   } catch (error) {
     console.error('Registration error:', error);
     res.status(500).json({

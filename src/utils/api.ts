@@ -1,9 +1,14 @@
 import config from '../config';
-import { useAuth } from '../contexts/AuthContext';
 
 interface RequestOptions extends RequestInit {
   params?: Record<string, string>;
   requiresAuth?: boolean;
+}
+
+interface ApiHeaders {
+  'Content-Type': string;
+  'Accept-Language': string;
+  Authorization?: string;
 }
 
 class ApiError extends Error {
@@ -30,11 +35,10 @@ export const createApiClient = (getToken: () => string | null) => {
       });
     }
 
-    // Prepare headers
-    const headers: Record<string, string> = {
+    // Prepare headers with proper typing
+    const headers: ApiHeaders = {
       'Content-Type': 'application/json',
       'Accept-Language': localStorage.getItem('i18nextLng') || 'ar',
-      ...customHeaders,
     };
 
     // Add authorization header if required
@@ -49,7 +53,7 @@ export const createApiClient = (getToken: () => string | null) => {
     try {
       const response = await fetch(url.toString(), {
         ...otherOptions,
-        headers,
+        headers: { ...headers, ...customHeaders }
       });
 
       if (!response.ok) {
@@ -91,6 +95,6 @@ export const createApiClient = (getToken: () => string | null) => {
 
 // Hook for using the API client
 export const useApi = () => {
-  const { getToken } = useAuth();
-  return createApiClient(getToken);
+  const token = localStorage.getItem('token');
+  return createApiClient(() => token);
 };

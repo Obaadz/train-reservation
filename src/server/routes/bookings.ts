@@ -2,35 +2,35 @@ import { Router } from 'express';
 import { BookingModel } from '../models/Booking';
 import { NotificationModel } from '../models/Notification';
 import { JourneyModel } from '../models/Journey';
+import { PassengerModel } from '../models/Passenger';
 import { authenticateToken } from '../middleware/auth';
 
 const router = Router();
 
+// Create new booking
 router.post('/', authenticateToken, async (req, res) => {
+  console.log('here')
   try {
-    const { journeyId, classId, seatNumber, paymentMethod } = req.body;
-    const passengerId = req.user.id;
+    const { journeyId, classId, seatNumber, passengerDetails, paymentDetails } = req.body;
     const isArabic = req.headers['accept-language']?.includes('ar');
+    if (!req.user) {
+      return res.status(401).json({
+        message: isArabic ? 'غير مصرح' : 'Unauthorized'
+      });
+    }
+    const passengerId = req.user.id;
 
     // Check if journey exists and has available seats
     const journey = await JourneyModel.findById(journeyId);
     if (!journey) {
+      console.log('no journey')
       return res.status(404).json({
         message: isArabic ? 'الرحلة غير موجودة' : 'Journey not found'
       });
     }
 
-    // Check if seat is available
-    const isSeatAvailable = await JourneyModel.checkSeatAvailability(
-      journeyId,
-      classId,
-      seatNumber
-    );
-    if (!isSeatAvailable) {
-      return res.status(400).json({
-        message: isArabic ? 'المقعد غير متاح' : 'Seat not available'
-      });
-    }
+    // Calculate price
+    // const price = await JourneyModel.calculatePrice(journeyId, classId);
 
     // Create booking
     const bookingId = `B${Date.now()}`;
@@ -39,21 +39,25 @@ router.post('/', authenticateToken, async (req, res) => {
       passenger_id: passengerId,
       journey_id: journeyId,
       train_id: journey.train_id,
-      class_id: classId,
-      coach_number: seatNumber.substring(0, 1),
+      class_id: "TC002",
       seat_number: seatNumber,
       booking_status: 'CONFIRMED',
       booking_date: new Date(),
-      payment_status: 'PENDING',
-      payment_method: paymentMethod,
-      amount: await JourneyModel.calculatePrice(journeyId, classId)
+      payment_status: 'COMPLETED',
+      payment_method: paymentDetails.method,
+      coach_number: seatNumber.split('-')[0],
+      amount: 250
     });
+
+    // Update passenger loyalty points
+    const loyaltyPoints = Math.floor(250 / 10);
+    await PassengerModel.updateLoyaltyPoints(passengerId, loyaltyPoints);
 
     // Create notification
     await NotificationModel.create({
       notification_id: `N${Date.now()}`,
       passenger_id: passengerId,
-      message: isArabic 
+      message: isArabic
         ? 'تم تأكيد حجزك بنجاح'
         : 'Your booking has been confirmed',
       type: 'BOOKING_CONFIRMATION',
@@ -61,10 +65,13 @@ router.post('/', authenticateToken, async (req, res) => {
       status: 'SENT'
     });
 
-    res.status(201).json({ bookingId });
+    res.status(201).json({
+      bookingId,
+      message: isArabic ? 'تم تأكيد الحجز بنجاح' : 'Booking confirmed successfully'
+    });
   } catch (error) {
     console.error('Booking creation error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: req.headers['accept-language']?.includes('ar')
         ? 'خطأ في إنشاء الحجز'
         : 'Error creating booking'
@@ -72,25 +79,21 @@ router.post('/', authenticateToken, async (req, res) => {
   }
 });
 
+// Get user's bookings
 router.get('/my-bookings', authenticateToken, async (req, res) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({
+        message: req.headers['accept-language']?.includes('ar')
+          ? 'غير مصرح'
+          : 'Unauthorized'
+      });
+    }
     const bookings = await BookingModel.findByPassenger(req.user.id);
-    
-    // Enhance booking data with journey details
-    const enhancedBookings = await Promise.all(bookings.map(async booking => {
-      const journey = await JourneyModel.findById(booking.journey_id);
-      const stations = await JourneyModel.getJourneyStations(booking.journey_id);
-      return {
-        ...booking,
-        journey,
-        stations
-      };
-    }));
-
-    res.json(enhancedBookings);
+    res.json(bookings);
   } catch (error) {
-    console.error('Bookings retrieval error:', error);
-    res.status(500).json({ 
+    console.error('Error fetching bookings:', error);
+    res.status(500).json({
       message: req.headers['accept-language']?.includes('ar')
         ? 'خطأ في جلب الحجوزات'
         : 'Error fetching bookings'
@@ -98,53 +101,37 @@ router.get('/my-bookings', authenticateToken, async (req, res) => {
   }
 });
 
-router.post('/:id/cancel', authenticateToken, async (req, res) => {
+// Calculate booking price
+router.get('/calculate-price', authenticateToken, async (req, res) => {
   try {
-    const isArabic = req.headers['accept-language']?.includes('ar');
-
-    // Check if booking exists and belongs to user
-    const booking = await BookingModel.findById(req.params.id);
-    if (!booking || booking.passenger_id !== req.user.id) {
-      return res.status(404).json({
-        message: isArabic ? 'الحجز غير موجود' : 'Booking not found'
-      });
-    }
-
-    // Check if booking can be cancelled
-    const journey = await JourneyModel.findById(booking.journey_id);
-    if (!journey || journey.status !== 'SCHEDULED') {
-      return res.status(400).json({
-        message: isArabic 
-          ? 'لا يمكن إلغاء هذا الحجز'
-          : 'This booking cannot be cancelled'
-      });
-    }
-
-    await BookingModel.updateStatus(req.params.id, 'CANCELLED');
-
-    // Create cancellation notification
-    await NotificationModel.create({
-      notification_id: `N${Date.now()}`,
-      passenger_id: req.user.id,
-      message: isArabic
-        ? 'تم إلغاء حجزك بنجاح'
-        : 'Your booking has been cancelled',
-      type: 'SYSTEM',
-      created_at: new Date(),
-      status: 'SENT'
-    });
-
-    res.json({ 
-      message: isArabic
-        ? 'تم إلغاء الحجز بنجاح'
-        : 'Booking cancelled successfully'
-    });
+    const { journeyId, classId } = req.query;
+    const price = await JourneyModel.calculatePrice(journeyId as string, classId as string);
+    res.json({ price });
   } catch (error) {
-    console.error('Booking cancellation error:', error);
-    res.status(500).json({ 
+    console.error('Error calculating price:', error);
+    res.status(500).json({
       message: req.headers['accept-language']?.includes('ar')
-        ? 'خطأ في إلغاء الحجز'
-        : 'Error cancelling booking'
+        ? 'خطأ في حساب السعر'
+        : 'Error calculating price'
+    });
+  }
+});
+
+// Validate seat availability
+router.get('/validate-seat', authenticateToken, async (req, res) => {
+  try {
+    const { journeyId, seatNumber } = req.query;
+    const isValid = await JourneyModel.checkSeatAvailability(
+      journeyId as string,
+      seatNumber as string
+    );
+    res.json({ isValid });
+  } catch (error) {
+    console.error('Error validating seat:', error);
+    res.status(500).json({
+      message: req.headers['accept-language']?.includes('ar')
+        ? 'خطأ في التحقق من المقعد'
+        : 'Error validating seat'
     });
   }
 });
