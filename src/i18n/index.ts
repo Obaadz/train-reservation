@@ -51,8 +51,8 @@ i18n
         }
       }
     },
-    lng: 'ar', // Default language
-    fallbackLng: 'ar',
+    lng: 'en', // Default language
+    fallbackLng: 'en',
     interpolation: {
       escapeValue: false
     },
