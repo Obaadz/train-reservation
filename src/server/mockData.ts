@@ -14,7 +14,7 @@ const setupMockData = async () => {
     const passengers = [
       {
         pid: 'P001',
-        name: 'أحمد محمد',
+        name: 'Ahmed Ali',
         email: 'ahmed@example.com',
         password: await bcrypt.hash('password123', 10),
         loyalty_status: 'GOLD',
@@ -22,7 +22,7 @@ const setupMockData = async () => {
       },
       {
         pid: 'P002',
-        name: 'سارة عبدالله',
+        name: 'Sara Alabdullah',
         email: 'sara@example.com',
         password: await bcrypt.hash('password123', 10),
         loyalty_status: 'SILVER',
