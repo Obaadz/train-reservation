@@ -5,7 +5,6 @@ import Home from "./pages/Home";
 import Search from "./pages/Search";
 import Booking from "./pages/Booking";
 import Login from "./pages/Login";
-import EmployeeLogin from "./pages/EmployeeLogin";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -28,7 +27,6 @@ function App() {
                   <Route path="/search" element={<Search />} />
                   <Route path="/booking/:id" element={<Booking />} />
                   <Route path="/login" element={<Login />} />
-                  <Route path="/employee/login" element={<EmployeeLogin />} />
                   <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
                   <Route path="/register" element={<Register />} />
                   <Route
