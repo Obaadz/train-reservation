@@ -7,7 +7,7 @@ USE train_reservation;
 
 -- Stations table
 CREATE TABLE stations (
-    scode VARCHAR(10) PRIMARY KEY,
+    scode VARCHAR(100) PRIMARY KEY,
     name_ar VARCHAR(100) NOT NULL,
     name_en VARCHAR(100) NOT NULL,
     capacity INT NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE stations (
 
 -- Train Classes table
 CREATE TABLE train_classes (
-    class_id VARCHAR(10) PRIMARY KEY,
+    class_id VARCHAR(100) PRIMARY KEY,
     name_ar VARCHAR(50) NOT NULL,
     name_en VARCHAR(50) NOT NULL,
     description_ar TEXT,
@@ -37,7 +37,7 @@ CREATE TABLE train_classes (
 
 -- Trains table
 CREATE TABLE trains (
-    tid VARCHAR(10) PRIMARY KEY,
+    tid VARCHAR(100) PRIMARY KEY,
     serial_number VARCHAR(50) UNIQUE NOT NULL,
     maintenance_status ENUM('ACTIVE', 'MAINTENANCE', 'OUT_OF_SERVICE') NOT NULL DEFAULT 'ACTIVE',
     class_capacities JSON NOT NULL,
@@ -50,7 +50,7 @@ CREATE TABLE trains (
 
 -- Employees table
 CREATE TABLE employees (
-    eid VARCHAR(10) PRIMARY KEY,
+    eid VARCHAR(100) PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
     middle_name VARCHAR(50),
     last_name VARCHAR(50) NOT NULL,
@@ -61,7 +61,7 @@ CREATE TABLE employees (
     shift_type ENUM('MORNING', 'EVENING', 'NIGHT') NOT NULL,
     branch_location VARCHAR(100) NOT NULL,
     role ENUM('RECEPTIONIST', 'DRIVER', 'TECHNICIAN', 'CLEANER', 'STAFF', 'MANAGER', 'ADMIN') NOT NULL,
-    station_code VARCHAR(10),
+    station_code VARCHAR(100),
     hire_date DATE NOT NULL,
     can_login BOOLEAN DEFAULT FALSE,
     certification_details JSON,
@@ -75,8 +75,8 @@ CREATE TABLE employees (
 
 -- Employee Schedules table
 CREATE TABLE employee_schedules (
-    schedule_id VARCHAR(10) PRIMARY KEY,
-    employee_id VARCHAR(10) NOT NULL,
+    schedule_id VARCHAR(100) PRIMARY KEY,
+    employee_id VARCHAR(100) NOT NULL,
     date DATE NOT NULL,
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
@@ -90,8 +90,8 @@ CREATE TABLE employee_schedules (
 
 -- Employee Leave table
 CREATE TABLE employee_leave (
-    leave_id VARCHAR(10) PRIMARY KEY,
-    employee_id VARCHAR(10) NOT NULL,
+    leave_id VARCHAR(100) PRIMARY KEY,
+    employee_id VARCHAR(100) NOT NULL,
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
     leave_type ENUM('ANNUAL', 'SICK', 'EMERGENCY') NOT NULL,
@@ -106,7 +106,7 @@ CREATE TABLE employee_leave (
 
 -- Passengers table
 CREATE TABLE passengers (
-    pid VARCHAR(10) PRIMARY KEY,
+    pid VARCHAR(100) PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
@@ -123,8 +123,8 @@ CREATE TABLE passengers (
 
 -- Journeys table
 CREATE TABLE journeys (
-    jid VARCHAR(10) PRIMARY KEY,
-    train_id VARCHAR(10) NOT NULL,
+    jid VARCHAR(100) PRIMARY KEY,
+    train_id VARCHAR(100) NOT NULL,
     base_price DECIMAL(10,2) NOT NULL,
     status ENUM('SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED') NOT NULL DEFAULT 'SCHEDULED',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -135,8 +135,8 @@ CREATE TABLE journeys (
 
 -- Journey Stations table
 CREATE TABLE journey_stations (
-    journey_id VARCHAR(10),
-    station_code VARCHAR(10),
+    journey_id VARCHAR(100),
+    station_code VARCHAR(100),
     sequence_number INT NOT NULL,
     arrival_time TIME NOT NULL,
     departure_time TIME NOT NULL,
@@ -151,13 +151,13 @@ CREATE TABLE journey_stations (
 
 -- Bookings table
 CREATE TABLE bookings (
-    booking_id VARCHAR(10) PRIMARY KEY,
-    passenger_id VARCHAR(10) NOT NULL,
-    journey_id VARCHAR(10) NOT NULL,
-    train_id VARCHAR(10) NOT NULL,
-    class_id VARCHAR(10) NOT NULL,
-    coach_number VARCHAR(10) NOT NULL,
-    seat_number VARCHAR(10) NOT NULL,
+    booking_id VARCHAR(100) PRIMARY KEY,
+    passenger_id VARCHAR(100) NOT NULL,
+    journey_id VARCHAR(100) NOT NULL,
+    train_id VARCHAR(100) NOT NULL,
+    class_id VARCHAR(100) NOT NULL,
+    coach_number VARCHAR(100) NOT NULL,
+    seat_number VARCHAR(100) NOT NULL,
     booking_status ENUM('CONFIRMED', 'WAITLISTED', 'CANCELLED') NOT NULL,
     booking_date DATETIME NOT NULL,
     payment_status ENUM('PENDING', 'COMPLETED', 'REFUNDED') NOT NULL,
@@ -175,8 +175,8 @@ CREATE TABLE bookings (
 
 -- Notifications table
 CREATE TABLE notifications (
-    notification_id VARCHAR(10) PRIMARY KEY,
-    passenger_id VARCHAR(10) NOT NULL,
+    notification_id VARCHAR(100) PRIMARY KEY,
+    passenger_id VARCHAR(100) NOT NULL,
     message TEXT NOT NULL,
     type ENUM('BOOKING_CONFIRMATION', 'JOURNEY_REMINDER', 'SYSTEM') NOT NULL,
     created_at DATETIME NOT NULL,

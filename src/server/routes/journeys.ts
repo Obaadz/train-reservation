@@ -5,11 +5,25 @@ import { JourneySearchParams, JourneySearchResult, JourneyDetails } from '../typ
 
 const router = Router();
 
+// Helper function to calculate loyalty discount
+const calculateLoyaltyDiscount = (loyaltyStatus: string, originalPrice: number): number => {
+  const discounts = {
+    'BRONZE': 0,
+    'SILVER': 0.05, // 5% discount
+    'GOLD': 0.10,   // 10% discount
+    'PLATINUM': 0.15 // 15% discount
+  };
+
+  const discountRate = discounts[loyaltyStatus as keyof typeof discounts] || 0;
+  return originalPrice * (1 - discountRate);
+};
+
 // Search journeys
 router.get('/search', async (req: Request, res: Response) => {
   try {
     const { from, to, date, passengers = '1', classId } = req.query;
     const isArabic = req.headers['accept-language']?.includes('ar');
+    const loyaltyStatus = req.user?.loyaltyStatus || 'BRONZE';
 
     if (!from || !to || !date) {
       return res.status(400).json({
@@ -31,17 +45,19 @@ router.get('/search', async (req: Request, res: Response) => {
       searchParams.date
     );
 
-    // If classId is provided, calculate prices and available seats for that class only
     const journeysWithDetails: JourneySearchResult[] = await Promise.all(
       journeys.map(async (journey) => {
         const availableClasses = await Promise.all(
           Object.keys(journey.available_classes).map(async (classId) => {
-            const price = await JourneyModel.calculatePrice(journey.jid, classId);
-            const availableSeats = await JourneyModel.getAvailableSeats(journey.jid, classId);
+            const originalPrice = await JourneyModel.calculatePrice(journey.jid, classId);
+            const discountedPrice = calculateLoyaltyDiscount(loyaltyStatus, originalPrice);
+
             return {
               classId,
-              price,
-              availableSeats: availableSeats.length
+              originalPrice,
+              discountedPrice: req.user ? discountedPrice : null,
+              discount: req.user ? (originalPrice - discountedPrice) : 0,
+              availableSeats: journey.available_classes[classId]
             };
           })
         );
@@ -51,7 +67,7 @@ router.get('/search', async (req: Request, res: Response) => {
           available_classes: availableClasses
         };
       })
-    );
+    ) as any;
 
     res.json(journeysWithDetails);
   } catch (error) {
@@ -63,6 +79,7 @@ router.get('/search', async (req: Request, res: Response) => {
     });
   }
 });
+
 
 // Get journey details
 router.get('/:id', authenticateToken, async (req: Request, res: Response) => {

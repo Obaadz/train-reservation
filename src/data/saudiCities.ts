@@ -30,7 +30,7 @@ export const saudiCities: City[] = [
     nameEn: 'Dammam',
     region: 'Eastern',
     stationCode: 'STN003',
-    image: 'https://images.unsplash.com/photo-1578474846511-04ba529f0b88?auto=format&fit=crop&q=80&w=2067'
+    image: 'https://encrypted-tbn3.gstatic.com/licensed-image?q=tbn:ANd9GcTZfsx9c4OoMrARsiaNcD0CaXU9Cka-GVuHOyd2gm4a3Ch2eprKnGQTeGUNAIjhCBsmo75SGjQQy48lZGW1gyD9KK8vS46rT4NrOIMjCw'
   },
   {
     id: 'MKH',
@@ -46,6 +46,6 @@ export const saudiCities: City[] = [
     nameEn: 'Madinah',
     region: 'Western',
     stationCode: 'STN005',
-    image: 'https://images.unsplash.com/photo-1591604129939-f7c5f6145e31?auto=format&fit=crop&q=80&w=2070'
+    image: 'https://encrypted-tbn1.gstatic.com/licensed-image?q=tbn:ANd9GcSFOxjRxAFs6QDOi0x5mQqXYupSyLd11YMj1KFY7SFDa02-CA4NhCYtsGy5quDl4QxULw_NYXTUww60XCoauj8_TzCLooL0aq1d-tn6FAk'
   }
 ];

@@ -12,5 +12,6 @@
   "error": "Error",
   "next": "Next",
   "cancel": "Cancel",
-  "confirm": "Confirm"
+  "confirm": "Confirm",
+  "loyaltyDiscount": "{{status}} Member Discount"
 }

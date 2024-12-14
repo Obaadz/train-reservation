@@ -1,17 +1,31 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Train, Clock, Users, CreditCard } from "lucide-react";
+import { Train, Clock, Users, CreditCard, Tag } from "lucide-react";
 import { Journey } from "../../data/mockJourneys";
 import { useNavigate } from "react-router-dom";
 import { trainClasses } from "../../data/trainClasses";
+import { useAuth } from "../../contexts/AuthContext";
 
 interface JourneyCardProps {
   journey: Journey;
 }
 
+const calculateLoyaltyDiscount = (loyaltyStatus: string, originalPrice: number): number => {
+  const discounts = {
+    BRONZE: 0,
+    SILVER: 0.05, // 5% discount
+    GOLD: 0.1, // 10% discount
+    PLATINUM: 0.15, // 15% discount
+  };
+
+  const discountRate = discounts[loyaltyStatus as keyof typeof discounts] || 0;
+  return originalPrice * (1 - discountRate);
+};
+
 const JourneyCard: React.FC<JourneyCardProps> = ({ journey }) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const { isAuthenticated, user } = useAuth();
   const isArabic = i18n.language === "ar";
   const [selectedClass, setSelectedClass] = useState(journey.classes[0].classId);
 
@@ -35,6 +49,40 @@ const JourneyCard: React.FC<JourneyCardProps> = ({ journey }) => {
   const getTrainClassName = (classId: string) => {
     const trainClass = trainClasses.find((c) => c.id === classId);
     return isArabic ? trainClass?.nameAr : trainClass?.nameEn;
+  };
+
+  const renderPrice = (classOption: any) => {
+    const { loyaltyStatus } = user || {};
+    const originalPrice = classOption.originalPrice || classOption.price;
+
+    if (!isAuthenticated) {
+      // Always show the original price for non-authenticated users
+      return <span className="text-xl font-bold text-indigo-600">{originalPrice} SAR</span>;
+    }
+
+    // Calculate the discounted price using calculateLoyaltyDiscount
+    const discountedPrice = calculateLoyaltyDiscount(loyaltyStatus || "BRONZE", originalPrice);
+
+    if (discountedPrice < originalPrice) {
+      // Show the discounted price and original price for authenticated users with a discount
+      return (
+        <div className="flex flex-col items-end">
+          <div className="flex items-center gap-2">
+            <Tag className="w-4 h-4 text-green-500" />
+            <span className="text-xl font-bold text-green-600">
+              {discountedPrice.toFixed(2)} SAR
+            </span>
+          </div>
+          <div className="text-sm text-gray-500 line-through">{originalPrice} SAR</div>
+          <div className="text-xs text-green-600">
+            {t("loyaltyDiscount", { status: loyaltyStatus })}
+          </div>
+        </div>
+      );
+    }
+
+    // If no discount applies, show the original price
+    return <span className="text-xl font-bold text-indigo-600">{originalPrice} SAR</span>;
   };
 
   return (
@@ -102,7 +150,7 @@ const JourneyCard: React.FC<JourneyCardProps> = ({ journey }) => {
               </div>
               <div className="flex items-center gap-1 justify-end">
                 <CreditCard className="w-4 h-4 text-gray-400" />
-                <span className="text-xl font-bold text-indigo-600">{classOption.price} SAR</span>
+                {renderPrice(classOption)}
               </div>
             </div>
           ))}

@@ -1,4 +1,12 @@
 {
+  "name": "الاسم",
+  "email": "البريد الإلكتروني",
+  "phone": "رقم الهاتف",
+  "idNumber": "رقم الهوية",
+  "namePlaceholder": "الرجاء إدخال الاسم",
+  "emailPlaceholder": "الرجاء إدخال البريد الإلكتروني",
+  "phonePlaceholder": "الرجاء إدخال رقم الهاتف",
+  "idNumberPlaceholder": "الرجاء إدخال رقم الهوية",
   "title": "حجز التذكرة",
   "passengerDetails": "بيانات المسافر",
   "seatSelection": "اختيار المقعد",

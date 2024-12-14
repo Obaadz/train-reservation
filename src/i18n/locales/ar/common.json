@@ -12,5 +12,6 @@
   "error": "خطأ",
   "next": "التالي",
   "cancel": "إلغاء",
-  "confirm": "تأكيد"
+  "confirm": "تأكيد",
+  "loyaltyDiscount": "خصم {{status}} للأعضاء"
 }

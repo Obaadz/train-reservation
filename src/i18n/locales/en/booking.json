@@ -1,4 +1,12 @@
 {
+  "name": "Name",
+  "email": "Email",
+  "phone": "Phone",
+  "idNumber": "ID Number",
+  "namePlaceholder": "Enter your name",
+  "emailPlaceholder": "Enter your email",
+  "phonePlaceholder": "Enter your phone number",
+  "idNumberPlaceholder": "Enter your ID number",
   "title": "Book Ticket",
   "passengerDetails": "Passenger Details",
   "seatSelection": "Select Seat",

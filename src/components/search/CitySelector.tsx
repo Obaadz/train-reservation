@@ -1,6 +1,7 @@
-import React from 'react';
-import { City } from '../../data/saudiCities';
-import { MapPin, X } from 'lucide-react';
+import React from "react";
+import { City } from "../../data/saudiCities";
+import { MapPin, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface CitySelectorProps {
   cities: City[];
@@ -23,8 +24,9 @@ const CitySelector: React.FC<CitySelectorProps> = ({
   onToggle,
   availableCityIds,
 }) => {
-  const filteredCities = availableCityIds 
-    ? cities.filter(city => availableCityIds.includes(city.id))
+  const { t } = useTranslation("search");
+  const filteredCities = availableCityIds
+    ? cities.filter((city) => availableCityIds.includes(city.id))
     : cities;
 
   const handleCitySelect = (city: City, e: React.MouseEvent) => {
@@ -40,9 +42,7 @@ const CitySelector: React.FC<CitySelectorProps> = ({
 
   return (
     <div className="relative">
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        {label}
-      </label>
+      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
       <div
         className="relative cursor-pointer"
         onClick={(e) => {
@@ -54,7 +54,9 @@ const CitySelector: React.FC<CitySelectorProps> = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <MapPin className="w-5 h-5 text-gray-400" />
-              <span className={`${selectedCity ? 'text-gray-900' : 'text-gray-500'} transition-colors`}>
+              <span
+                className={`${selectedCity ? "text-gray-900" : "text-gray-500"} transition-colors`}
+              >
                 {selectedCity ? selectedCity.nameAr : placeholder}
               </span>
             </div>
@@ -79,7 +81,7 @@ const CitySelector: React.FC<CitySelectorProps> = ({
                     className="p-3 hover:bg-gray-50 cursor-pointer flex items-center gap-3 transition-colors slide-in"
                     onClick={(e) => handleCitySelect(city, e)}
                   >
-                    <div 
+                    <div
                       className="w-12 h-12 rounded-lg bg-cover bg-center"
                       style={{ backgroundImage: `url(${city.image})` }}
                     />
@@ -91,7 +93,7 @@ const CitySelector: React.FC<CitySelectorProps> = ({
                 ))
               ) : (
                 <div className="p-3 text-center text-gray-500 slide-in">
-                  لا توجد مدن متاحة
+                  {t("noAvailableCities")}
                 </div>
               )}
             </div>
