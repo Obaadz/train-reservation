@@ -7,7 +7,7 @@ import { useToast } from "../contexts/ToastContext";
 import FormField from "../components/auth/FormField";
 import Button from "../components/common/Button";
 import useForm from "../hooks/useForm";
-import { loginValidationRules } from "../utils/authValidation";
+import { getLoginValidationRules } from "../utils/authValidation";
 
 interface LoginForm {
   email: string;
@@ -26,7 +26,7 @@ const Login: React.FC = () => {
         email: "",
         password: "",
       },
-      validationRules: loginValidationRules,
+      validationRules: getLoginValidationRules(),
       onSubmit: async (values) => {
         try {
           const response = await fetch(

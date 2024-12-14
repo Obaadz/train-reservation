@@ -7,7 +7,7 @@ import { useToast } from "../contexts/ToastContext";
 import FormField from "../components/auth/FormField";
 import Button from "../components/common/Button";
 import useForm from "../hooks/useForm";
-import { registerValidationRules } from "../utils/authValidation";
+import { getRegisterValidationRules } from "../utils/authValidation";
 
 interface RegisterForm {
   name: string;
@@ -22,58 +22,55 @@ const Register: React.FC = () => {
   const { showToast } = useToast();
   const navigate = useNavigate();
 
-  const { values, errors, touched, isSubmitting, isValid, handleChange, handleSubmit } = useForm<RegisterForm>({
-    initialValues: {
-      name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
-    validationRules: registerValidationRules,
-    onSubmit: async (values) => {
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/auth/register`, {
-          method: "POST",
-          headers: { 
-            "Content-Type": "application/json",
-            "Accept-Language": localStorage.getItem("i18nextLng") || "ar"
-          },
-          body: JSON.stringify({
-            name: values.name,
-            email: values.email,
-            password: values.password,
-          }),
-        });
+  const { values, errors, touched, isSubmitting, isValid, handleChange, handleSubmit } =
+    useForm<RegisterForm>({
+      initialValues: {
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      },
+      validationRules: getRegisterValidationRules(),
+      onSubmit: async (values) => {
+        try {
+          const response = await fetch(
+            `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/auth/register`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Accept-Language": localStorage.getItem("i18nextLng") || "ar",
+              },
+              body: JSON.stringify({
+                name: values.name,
+                email: values.email,
+                password: values.password,
+              }),
+            }
+          );
 
-        const data = await response.json();
-        
-        if (!response.ok) {
-          throw new Error(data.message || t("errors.registerFailed"));
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.message || t("errors.registerFailed"));
+          }
+
+          login(data.token);
+          showToast(t("registerSuccess"), "success");
+          navigate("/dashboard");
+        } catch (err) {
+          showToast(err instanceof Error ? err.message : t("errors.registerFailed"), "error");
         }
-
-        login(data.token);
-        showToast(t("registerSuccess"), "success");
-        navigate("/dashboard");
-      } catch (err) {
-        showToast(
-          err instanceof Error ? err.message : t("errors.registerFailed"), 
-          "error"
-        );
-      }
-    },
-  });
+      },
+    });
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <UserPlus className="mx-auto h-12 w-12 text-indigo-600" />
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            {t("registerTitle")}
-          </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            {t("registerSubtitle")}
-          </p>
+          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">{t("registerTitle")}</h2>
+          <p className="mt-2 text-sm text-gray-600">{t("registerSubtitle")}</p>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -127,13 +124,13 @@ const Register: React.FC = () => {
             />
           </div>
 
-          <Button 
-            type="submit" 
-            loading={isSubmitting} 
-            fullWidth 
+          <Button
+            type="submit"
+            loading={isSubmitting}
+            fullWidth
             size="lg"
             disabled={!isValid || isSubmitting}
-            className={`${!isValid || isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`${!isValid || isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
           >
             {t("registerButton")}
           </Button>
@@ -141,10 +138,7 @@ const Register: React.FC = () => {
           <div className="text-center">
             <p className="text-sm text-gray-600">
               {t("hasAccount")}{" "}
-              <Link 
-                to="/login" 
-                className="font-medium text-indigo-600 hover:text-indigo-500"
-              >
+              <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
                 {t("loginNow")}
               </Link>
             </p>

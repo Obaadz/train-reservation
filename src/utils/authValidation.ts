@@ -1,70 +1,68 @@
 import { ValidationRules } from './validation';
-import i18next from 'i18next';
+import { getValidationMessage } from './validationMessages';
 
-const t = (key: string) => i18next.t(`auth:errors.${key}`);
-
-export const loginValidationRules: ValidationRules = {
+export const getLoginValidationRules = (): ValidationRules => ({
   email: [
     {
       test: (value) => Boolean(value),
-      message: t('emailRequired')
+      message: getValidationMessage('emailRequired')
     },
     {
       test: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value)),
-      message: t('invalidEmail')
+      message: getValidationMessage('invalidEmail')
     }
   ],
   password: [
     {
       test: (value) => Boolean(value),
-      message: t('passwordRequired')
+      message: getValidationMessage('passwordRequired')
     },
     {
       test: (value) => String(value).length >= 8,
-      message: t('passwordMinLength')
+      message: getValidationMessage('passwordMinLength')
     }
   ]
-};
+});
 
-export const registerValidationRules: ValidationRules = {
+export const getRegisterValidationRules = (): ValidationRules => ({
   name: [
     {
       test: (value) => Boolean(value),
-      message: t('nameRequired')
+      message: getValidationMessage('nameRequired')
     },
     {
       test: (value) => String(value).length >= 3,
-      message: t('nameMinLength')
+      message: getValidationMessage('nameMinLength')
     }
   ],
   email: [
     {
       test: (value) => Boolean(value),
-      message: t('emailRequired')
+      message: getValidationMessage('emailRequired')
     },
     {
       test: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value)),
-      message: t('invalidEmail')
+      message: getValidationMessage('invalidEmail')
     }
   ],
   password: [
     {
       test: (value) => Boolean(value),
-      message: t('passwordRequired')
+      message: getValidationMessage('passwordRequired')
     },
     {
       test: (value) => String(value).length >= 8,
-      message: t('passwordMinLength')
+      message: getValidationMessage('passwordMinLength')
     }
   ],
   confirmPassword: [
     {
       test: (value) => Boolean(value),
-      message: t('confirmPasswordRequired')
+      message: getValidationMessage('confirmPasswordRequired')
     },
     {
       test: (value, formValues) => value === formValues?.password,
-      message: t('passwordMismatch')
+      message: getValidationMessage('passwordMismatch')
     }
   ]
-};
+});
