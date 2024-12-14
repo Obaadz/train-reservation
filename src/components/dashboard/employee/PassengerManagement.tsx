@@ -98,19 +98,19 @@ const PassengerManagement: React.FC = () => {
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">
                   {t("name")}
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">
                   {t("email")}
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">
                   {t("loyaltyStatus")}
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">
                   {t("loyaltyPoints")}
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">
                   {t("actions")}
                 </th>
               </tr>

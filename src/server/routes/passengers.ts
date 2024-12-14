@@ -49,7 +49,7 @@ router.get('/metrics', authenticateToken, async (req, res) => {
     const metrics = {
       totalBookings: bookings.length,
       activeJourneys: bookings.filter(b => b.booking_status === 'CONFIRMED' && new Date(b.departure_time) > new Date()).length,
-      totalSpent: bookings.reduce((sum, b) => sum + b.amount, 0),
+      totalSpent: Number(bookings.reduce((sum, b) => sum + b.amount, 0)).toFixed(2),
       upcomingTrips: bookings.filter(b => b.booking_status === 'CONFIRMED' && new Date(b.departure_time) > new Date()).length,
       loyaltyPoints: req.user.loyaltyPoints || 0,
       mostVisitedCity: calculateMostVisitedCity(bookings),

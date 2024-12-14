@@ -2,18 +2,22 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
 interface Booking {
-  booking_id: string;
-  journey_id: string;
-  train_id: string;
-  seat_number: string;
-  booking_status: 'CONFIRMED' | 'WAITLISTED' | 'CANCELLED';
-  booking_date: string;
-  payment_status: 'PENDING' | 'COMPLETED' | 'REFUNDED';
-  amount: number;
-  from: string;
-  to: string;
-  departure_time: string;
-  arrival_time: string;
+  booking_id: string
+  passenger_id: string
+  journey_id: string
+  train_id: string
+  class_id: string
+  coach_number: string
+  seat_number: string
+  booking_status: string
+  booking_date: string
+  payment_status: string
+  payment_method: string
+  amount: string
+  created_at: string
+  updated_at: string
+  from?: string
+  to?: string
 }
 
 export const useBookingHistory = () => {

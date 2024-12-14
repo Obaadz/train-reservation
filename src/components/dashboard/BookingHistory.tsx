@@ -1,12 +1,12 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { Calendar, MapPin, AlertCircle } from 'lucide-react';
-import { useBookingHistory } from '../../hooks/useBookingHistory';
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { Calendar, MapPin, AlertCircle } from "lucide-react";
+import { useBookingHistory } from "../../hooks/useBookingHistory";
 
 const BookingHistory: React.FC = () => {
-  const { t } = useTranslation(['dashboard']);
+  const { t } = useTranslation(["dashboard"]);
   const { bookings, loading, error, cancelBooking } = useBookingHistory();
-
+  console.log(bookings);
   if (loading) {
     return (
       <div className="bg-white rounded-lg shadow-md p-6">
@@ -37,36 +37,34 @@ const BookingHistory: React.FC = () => {
     try {
       await cancelBooking(bookingId);
     } catch (err) {
-      console.error('Failed to cancel booking:', err);
+      console.error("Failed to cancel booking:", err);
     }
   };
 
   return (
     <div className="bg-white rounded-lg shadow-md">
       <div className="p-6">
-        <h2 className="text-lg font-semibold text-gray-900">
-          {t('bookingHistory')}
-        </h2>
+        <h2 className="text-lg font-semibold text-gray-900">{t("bookingHistory")}</h2>
       </div>
 
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('bookingId')}
+              <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase tracking-wider">
+                {t("bookingId")}
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('route')}
+              <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase tracking-wider">
+                {t("route")}
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('date')}
+              <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase tracking-wider">
+                {t("date")}
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('status')}
+              <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase tracking-wider">
+                {t("status")}
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('actions')}
+              <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase tracking-wider">
+                {t("actions")}
               </th>
             </tr>
           </thead>
@@ -79,33 +77,35 @@ const BookingHistory: React.FC = () => {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <div className="flex items-center gap-2">
                     <MapPin className="w-4 h-4" />
-                    {booking.from} → {booking.to}
+                    {booking.from ? booking.from + "→" + booking.to : "N/A"}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <div className="flex items-center gap-2">
                     <Calendar className="w-4 h-4" />
-                    {new Date(booking.departure_time).toLocaleDateString()}
+                    {new Date(booking.created_at).toLocaleDateString()}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    booking.booking_status === 'CONFIRMED'
-                      ? 'bg-green-100 text-green-800'
-                      : booking.booking_status === 'WAITLISTED'
-                      ? 'bg-yellow-100 text-yellow-800'
-                      : 'bg-red-100 text-red-800'
-                  }`}>
+                  <span
+                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                      booking.booking_status === "CONFIRMED"
+                        ? "bg-green-100 text-green-800"
+                        : booking.booking_status === "WAITLISTED"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : "bg-red-100 text-red-800"
+                    }`}
+                  >
                     {t(`status${booking.booking_status}`)}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {booking.booking_status === 'CONFIRMED' && (
+                  {booking.booking_status === "CONFIRMED" && (
                     <button
                       onClick={() => handleCancel(booking.booking_id)}
                       className="text-red-600 hover:text-red-900"
                     >
-                      {t('cancel')}
+                      {t("cancel")}
                     </button>
                   )}
                 </td>
