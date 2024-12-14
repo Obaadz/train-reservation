@@ -28,7 +28,7 @@ const mockJourneys: Journey[] = [
     id: "J002",
     trainNumber: "TRN002",
     from: "Riyadh",
-    to: "Hail",
+    to: "Dammam",
     departureTime: "09:30",
     arrivalTime: "15:45",
     occupancy: 72,

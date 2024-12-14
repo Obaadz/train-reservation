@@ -22,7 +22,7 @@ const mockBookings: Booking[] = [
   },
   {
     id: "BK002",
-    passengerName: "Sara Alabdullah",
+    passengerName: "Sara Ali",
     from: "Jeddah",
     to: "Madinah",
     date: "2024-03-16",
