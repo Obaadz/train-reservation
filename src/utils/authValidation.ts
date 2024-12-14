@@ -1,24 +1,27 @@
 import { ValidationRules } from './validation';
+import i18next from 'i18next';
+
+const t = (key: string) => i18next.t(`auth:errors.${key}`);
 
 export const loginValidationRules: ValidationRules = {
   email: [
     {
       test: (value) => Boolean(value),
-      message: 'البريد الإلكتروني مطلوب'
+      message: t('emailRequired')
     },
     {
       test: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value)),
-      message: 'البريد الإلكتروني غير صالح'
+      message: t('invalidEmail')
     }
   ],
   password: [
     {
       test: (value) => Boolean(value),
-      message: 'كلمة المرور مطلوبة'
+      message: t('passwordRequired')
     },
     {
       test: (value) => String(value).length >= 8,
-      message: 'كلمة المرور يجب أن تكون 8 أحرف على الأقل'
+      message: t('passwordMinLength')
     }
   ]
 };
@@ -27,41 +30,41 @@ export const registerValidationRules: ValidationRules = {
   name: [
     {
       test: (value) => Boolean(value),
-      message: 'الاسم مطلوب'
+      message: t('nameRequired')
     },
     {
       test: (value) => String(value).length >= 3,
-      message: 'الاسم يجب أن يكون 3 أحرف على الأقل'
+      message: t('nameMinLength')
     }
   ],
   email: [
     {
       test: (value) => Boolean(value),
-      message: 'البريد الإلكتروني مطلوب'
+      message: t('emailRequired')
     },
     {
       test: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value)),
-      message: 'البريد الإلكتروني غير صالح'
+      message: t('invalidEmail')
     }
   ],
   password: [
     {
       test: (value) => Boolean(value),
-      message: 'كلمة المرور مطلوبة'
+      message: t('passwordRequired')
     },
     {
       test: (value) => String(value).length >= 8,
-      message: 'كلمة المرور يجب أن تكون 8 أحرف على الأقل'
+      message: t('passwordMinLength')
     }
   ],
   confirmPassword: [
     {
       test: (value) => Boolean(value),
-      message: 'تأكيد كلمة المرور مطلوب'
+      message: t('confirmPasswordRequired')
     },
     {
       test: (value, formValues) => value === formValues?.password,
-      message: 'كلمات المرور غير متطابقة'
+      message: t('passwordMismatch')
     }
   ]
 };

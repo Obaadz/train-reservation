@@ -13,27 +13,31 @@ router.post('/login', async (req: Request, res: Response) => {
 
     if (!email || !password) {
       return res.status(400).json({
-        message: isArabic ? 'البريد الإلكتروني وكلمة المرور مطلوبان' : 'Email and password are required'
+        message: isArabic
+          ? 'البريد الإلكتروني وكلمة المرور مطلوبان'
+          : 'Email and password are required'
       });
     }
 
     if (userType === 'employee') {
       const employee = await EmployeeModel.findByEmail(email);
-      console.log("e", employee)
+
       if (!employee || !employee.can_login) {
         return res.status(401).json({
-          message: isArabic ? 'بيانات غير صحيحة' : 'Invalid credentials'
+          message: isArabic
+            ? 'البريد الإلكتروني أو كلمة المرور غير صحيحة'
+            : 'Invalid email or password'
         });
       }
-      console.log("test")
 
       const isValidPassword = await EmployeeModel.validatePassword(employee, password);
-      // if (!isValidPassword) {
-      //   console.log("not valid password")
-      //   return res.status(401).json({
-      //     message: isArabic ? 'بيانات غير صحيحة' : 'Invalid credentials'
-      //   });
-      // }
+      if (!isValidPassword) {
+        return res.status(401).json({
+          message: isArabic
+            ? 'البريد الإلكتروني أو كلمة المرور غير صحيحة'
+            : 'Invalid email or password'
+        });
+      }
 
       await EmployeeModel.updateLastLogin(employee.eid);
 
@@ -53,21 +57,27 @@ router.post('/login', async (req: Request, res: Response) => {
       res.json({
         token,
         userType: 'employee',
-        message: isArabic ? 'تم تسجيل الدخول بنجاح' : 'Login successful'
+        message: isArabic
+          ? 'تم تسجيل الدخول بنجاح'
+          : 'Login successful'
       });
     } else {
       const passenger = await PassengerModel.findByEmail(email);
 
       if (!passenger) {
         return res.status(401).json({
-          message: isArabic ? 'بيانات غير صحيحة' : 'Invalid credentials'
+          message: isArabic
+            ? 'البريد الإلكتروني أو كلمة المرور غير صحيحة'
+            : 'Invalid email or password'
         });
       }
 
       const isValidPassword = await PassengerModel.validatePassword(passenger, password);
       if (!isValidPassword) {
         return res.status(401).json({
-          message: isArabic ? 'بيانات غير صحيحة' : 'Invalid credentials'
+          message: isArabic
+            ? 'البريد الإلكتروني أو كلمة المرور غير صحيحة'
+            : 'Invalid email or password'
         });
       }
 
@@ -90,7 +100,9 @@ router.post('/login', async (req: Request, res: Response) => {
       res.json({
         token,
         userType: 'passenger',
-        message: isArabic ? 'تم تسجيل الدخول بنجاح' : 'Login successful'
+        message: isArabic
+          ? 'تم تسجيل الدخول بنجاح'
+          : 'Login successful'
       });
     }
   } catch (error) {
