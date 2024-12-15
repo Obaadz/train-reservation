@@ -102,6 +102,20 @@
   "passenger": "Passenger",
   "bookingId": "Booking ID",
   "date": "Date",
+  "coachNumber": "Coach Number",
+  "seatNumber": "Seat Number",
+  "paymentStatusCOMPLETED": "Completed",
+  "paymentStatusPENDING": "Pending",
+  "paymentStatusREFUNDED": "Refunded",
+  "paymentStatus": "Payment Status",
+  "amount": "Amount",
+  "bookingStatus": "Booking Status",
+  "creditCard": "Credit Card",
+  "debitCard": "Debit Card",
+  "cash": "Cash",
+  "class": "Class",
+  "editBooking": "Edit Booking",
+  "trainId": "Train ID",
   "success": {
     "passengerUpdated": "Passenger details updated successfully",
     "passwordReset": "Password reset successfully",
@@ -117,6 +131,7 @@
     "createEmployee": "Error while creating employee",
     "updateProfile": "Error while updating profile",
     "fetchProfile": "Error while fetching profile",
-    "fetchBookings": "Error while fetching bookings"
+    "fetchBookings": "Error while fetching bookings",
+    "updateBooking": "Error while updating booking"
   }
 }

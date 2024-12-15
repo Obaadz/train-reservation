@@ -81,5 +81,34 @@ export const BookingModel = {
       'UPDATE bookings SET payment_status = ? WHERE booking_id = ?',
       [status, bookingId]
     );
+  },
+
+  async update(bookingId: string, booking: Omit<Booking, 'RowDataPacket'>): Promise<void> {
+    // Check if the passenger_id exists in the passengers table
+    if (booking.passenger_id) {
+      const [result] = await pool.query(
+        `SELECT pid FROM passengers WHERE pid = ?`,
+        [booking.passenger_id]
+      );
+
+      if ((result as any[]).length === 0) {
+        throw new Error(`Passenger with ID ${booking.passenger_id} does not exist.`);
+      }
+    }
+
+    // Proceed with the update if the foreign key exists or is null
+    await pool.query(
+      `UPDATE bookings 
+       SET coach_number = ?, 
+           seat_number = ?, booking_status = ?, payment_status = ?, 
+           payment_method = ?, amount = ?, class_id = ?
+       WHERE booking_id = ?`,
+      [
+
+        booking.coach_number, booking.seat_number, booking.booking_status,
+        booking.payment_status, booking.payment_method,
+        booking.amount, booking.class_id, bookingId
+      ]
+    );
   }
 };

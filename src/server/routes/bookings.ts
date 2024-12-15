@@ -18,7 +18,7 @@ router.get('/my-bookings', authenticateToken, async (req, res) => {
       });
     }
 
-    
+
     const bookings = await BookingModel.findByPassenger(req.user.id);
     res.json(bookings);
   } catch (error) {
@@ -73,7 +73,7 @@ router.post('/', authenticateToken, async (req, res) => {
     });
 
     // Update passenger loyalty points
-    const loyaltyPoints = Math.floor(250 / 10);
+    const loyaltyPoints = 50;
     await PassengerModel.updateLoyaltyPoints(passengerId, loyaltyPoints);
 
     // Create notification
@@ -131,6 +131,38 @@ router.get('/validate-seat', authenticateToken, async (req, res) => {
     });
   }
 });
+
+// Update booking for admin
+router.put('/:id', authenticateToken, isEmployee, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { booking_status, payment_status } = req.body;
+    const isArabic = req.headers['accept-language']?.includes('ar');
+
+    if (!booking_status) {
+      return res.status(400).json({
+        message: isArabic
+          ? 'الحالة مطلوبة'
+          : 'Status is required'
+      });
+    }
+
+    await BookingModel.update(id, req.body)
+
+    res.json({
+      message: isArabic
+        ? 'تم تحديث حالة الحجز بنجاح'
+        : 'Booking status updated successfully'
+    });
+  } catch (error) {
+    console.error('Error updating booking status:', error);
+    res.status(500).json({
+      message: req.headers['accept-language']?.includes('ar')
+        ? 'خطأ في تحديث حالة الحجز'
+        : 'Error updating booking status'
+    });
+  }
+})
 
 // Get all bookings (employee only)
 router.get('/all', authenticateToken, isEmployee, async (req, res) => {

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { bookingService, Booking } from '../services/booking.service';
 
 export const useBookings = () => {
-  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [bookings, setBookings] = useState<Booking[]>();
   const [loading, setLoading] = useState(false);
   const { showToast } = useToast();
   const { t } = useTranslation(['dashboard']);

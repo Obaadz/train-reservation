@@ -55,6 +55,9 @@ const BookingHistory: React.FC = () => {
                 {t("bookingId")}
               </th>
               <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase tracking-wider">
+                {t("trainId")}
+              </th>
+              <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase tracking-wider">
                 {t("seatNumber")}
               </th>
               <th className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -76,6 +79,9 @@ const BookingHistory: React.FC = () => {
               <tr key={booking.booking_id}>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {booking.booking_id}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {booking.train_id}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {booking.seat_number}

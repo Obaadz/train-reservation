@@ -102,6 +102,20 @@
   "passenger": "المسافر",
   "bookingId": "رقم الحجز",
   "date": "التاريخ",
+  "coachNumber": "رقم العربة",
+  "seatNumber": "رقم المقعد",
+  "paymentStatusCOMPLETED": "تم الدفع",
+  "paymentStatusPENDING": "معلق",
+  "paymentStatusREFUNDED": "تم الاسترداد",
+  "paymentStatus": "حالة الدفع",
+  "amount": "المبلغ",
+  "bookingStatus": "حالة الحجز",
+  "creditCard": "بطاقة الائتمان",
+  "debitCard": "بطاقة الخصم",
+  "cash": "نقداً",
+  "class": "الفئة",
+  "editBooking": "تعديل بيانات الحجز",
+  "trainId": "رقم القطار",
   "success": {
     "passengerUpdated": "تم تحديث بيانات المسافر بنجاح",
     "passwordReset": "تم إعادة تعيين كلمة المرور بنجاح",
@@ -117,6 +131,7 @@
     "createEmployee": "حدث خطأ أثناء إنشاء موظف",
     "updateProfile": "حدث خطأ أثناء تحديث الملف الشخصي",
     "fetchProfile": "حدث خطأ أثناء جلب بيانات الملف الشخصي",
-    "fetchBookings": "حدث خطأ أثناء جلب بيانات الحجوزات"
+    "fetchBookings": "حدث خطأ أثناء جلب بيانات الحجوزات",
+    "updateBooking": "حدث خطأ أثناء تحديث بيانات الحجز"
   }
 }
