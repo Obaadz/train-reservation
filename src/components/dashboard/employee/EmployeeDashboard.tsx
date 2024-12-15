@@ -1,6 +1,15 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Users, Calendar, Clock, FileText, Settings, UserCog, UserPlus } from "lucide-react";
+import {
+  Users,
+  Calendar,
+  Clock,
+  FileText,
+  Settings,
+  UserCog,
+  UserPlus,
+  BookOpen,
+} from "lucide-react";
 import { useAuth } from "../../../contexts/AuthContext";
 import EmployeeStats from "./EmployeeStats";
 import EmployeeSchedule from "./EmployeeSchedule";
@@ -8,6 +17,7 @@ import LeaveRequests from "./LeaveRequests";
 import EmployeeProfile from "./EmployeeProfile";
 import PassengerManagement from "./PassengerManagement";
 import EmployeeManagement from "./EmployeeManagement";
+import BookingsManagement from "./BookingsManagement";
 
 const EmployeeDashboard: React.FC = () => {
   const { t } = useTranslation(["dashboard"]);
@@ -20,8 +30,8 @@ const EmployeeDashboard: React.FC = () => {
   const tabs = [
     { id: "overview", label: t("overview"), icon: Users },
     { id: "schedule", label: t("schedule"), icon: Calendar },
-    { id: "attendance", label: t("attendance"), icon: Clock },
     { id: "leave", label: t("leaveRequests"), icon: FileText },
+    { id: "bookings", label: t("bookingManagement"), icon: BookOpen },
     ...(canManagePassengers
       ? [{ id: "passengers", label: t("passengerManagement"), icon: UserCog }]
       : []),
@@ -39,6 +49,8 @@ const EmployeeDashboard: React.FC = () => {
         return <EmployeeSchedule />;
       case "leave":
         return <LeaveRequests />;
+      case "bookings":
+        return <BookingsManagement />;
       case "passengers":
         return canManagePassengers ? <PassengerManagement /> : null;
       case "employees":

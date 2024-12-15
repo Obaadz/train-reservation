@@ -28,6 +28,9 @@
   "back": "Back",
   "next": "Next",
   "viewBookings": "View Bookings",
+  "bookingManagement": "Booking Management",
+  "editBooking": "Edit Booking",
+  "noBookings": "No bookings found",
   "success": {
     "bookingConfirmed": "Booking Confirmed",
     "bookingReference": "Booking Reference"

@@ -28,6 +28,9 @@
   "back": "رجوع",
   "next": "التالي",
   "viewBookings": "عرض الحجوزات",
+  "bookingManagement": "إدارة الحجوزات",
+  "editBooking": "تعديل الحجز",
+  "noBookings": "لا توجد حجوزات",
   "success": {
     "bookingConfirmed": "تم تأكيد الحجز بنجاح",
     "bookingReference": "رقم الحجز"
