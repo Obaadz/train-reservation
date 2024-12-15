@@ -5,11 +5,11 @@ export interface Config {
 
 export const config: { [key: string]: Config } = {
   development: {
-    apiUrl: 'http://localhost:3000/api',
+    apiUrl: 'http://localhost:3001/api',
     environment: 'development'
   },
   production: {
-    apiUrl: 'http://localhost:3000/api',
+    apiUrl: 'http://localhost:3001/api',
     environment: 'production'
   }
 };

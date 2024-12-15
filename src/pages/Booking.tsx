@@ -81,7 +81,7 @@ const Booking: React.FC = () => {
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       // Create booking
-      const response = await fetch("http://localhost:3000/api/bookings", {
+      const response = await fetch("http://localhost:3001/api/bookings", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

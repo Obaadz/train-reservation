@@ -23,7 +23,7 @@ const NotificationsPanel: React.FC = () => {
 
   const fetchPassengers = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/passengers", {
+      const response = await fetch("http://localhost:3001/api/passengers", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -44,7 +44,7 @@ const NotificationsPanel: React.FC = () => {
 
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:3000/api/notifications/send", {
+      const response = await fetch("http://localhost:3001/api/notifications/send", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -31,7 +31,7 @@ export const useBookingHistory = () => {
       if (!isAuthenticated) return;
 
       try {
-        const response = await fetch('http://localhost:3000/api/bookings/my-bookings', {
+        const response = await fetch('http://localhost:3001/api/bookings/my-bookings', {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
@@ -55,7 +55,7 @@ export const useBookingHistory = () => {
 
   const cancelBooking = async (bookingId: string) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/bookings/${bookingId}/cancel`, {
+      const response = await fetch(`http://localhost:3001/api/bookings/${bookingId}/cancel`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`

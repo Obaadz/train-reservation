@@ -34,7 +34,7 @@ const Register: React.FC = () => {
       onSubmit: async (values) => {
         try {
           const response = await fetch(
-            `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/auth/register`,
+            `${import.meta.env.VITE_API_URL || "http://localhost:3001"}/api/auth/register`,
             {
               method: "POST",
               headers: {
