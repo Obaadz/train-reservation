@@ -61,7 +61,7 @@ export const useReservation = () => {
 
   const validateSeat = async (journeyId: string, seatNumber: string): Promise<boolean> => {
     try {
-      const response = await api.get(`/bookings/validate-seat`, {
+      const response = await api.get('/bookings/validate-seat', {
         params: { journeyId, seatNumber }
       });
       return response.isValid;

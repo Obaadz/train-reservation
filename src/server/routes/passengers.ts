@@ -44,7 +44,7 @@ router.get('/metrics', authenticateToken, async (req, res) => {
 
     // Get all bookings for the passenger
     const bookings = await BookingModel.findByPassenger(passengerId);
-    console.log(bookings)
+
     // Calculate metrics
     const metrics = {
       totalBookings: bookings.length,

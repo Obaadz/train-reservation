@@ -74,7 +74,6 @@ const EmployeeManagement: React.FC = () => {
         employees={employees}
         loading={loading}
         onEdit={(employee) => {
-          console.log(employee);
           setSelectedEmployee(employee);
           setIsEditModalOpen(true);
         }}
