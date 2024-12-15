@@ -91,6 +91,13 @@
   "part_time": "Part Time",
   "passwordEmptyForNoChangePlaceholder": "Leave blank if you don't want to change the password",
   "increaseDecreaseLoyaltyPoints": "Increase/Decrease Loyalty Points",
+  "trainNumber": "Train Number",
+  "route": "Route",
+  "time": "Time",
+  "occupancy": "Occupancy",
+  "passenger": "Passenger",
+  "bookingId": "Booking ID",
+  "date": "Date",
   "success": {
     "passengerUpdated": "Passenger details updated successfully",
     "passwordReset": "Password reset successfully",

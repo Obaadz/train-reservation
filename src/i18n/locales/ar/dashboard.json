@@ -91,6 +91,13 @@
   "part_time": "دوام جزئي",
   "passwordEmptyForNoChangePlaceholder": "اتركها فارغة إذا لم ترغب في تغيير كلمة المرور",
   "increaseDecreaseLoyaltyPoints": "زيادة أو تقليل نقاط الولاء",
+  "trainNumber": "رقم القطار",
+  "route": "المسار",
+  "time": "الوقت",
+  "occupancy": "نسبة الاشغال",
+  "passenger": "المسافر",
+  "bookingId": "رقم الحجز",
+  "date": "التاريخ",
   "success": {
     "passengerUpdated": "تم تحديث بيانات المسافر بنجاح",
     "passwordReset": "تم إعادة تعيين كلمة المرور بنجاح",
