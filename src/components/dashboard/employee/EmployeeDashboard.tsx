@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  Users,
+  Train,
   Calendar,
   Clock,
   FileText,
@@ -18,17 +18,18 @@ import EmployeeProfile from "./EmployeeProfile";
 import PassengerManagement from "./PassengerManagement";
 import EmployeeManagement from "./EmployeeManagement";
 import BookingsManagement from "./BookingsManagement";
+import OperationsOverview from "./OperationsOverview";
 
 const EmployeeDashboard: React.FC = () => {
   const { t } = useTranslation(["dashboard"]);
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("operations");
 
   const canManagePassengers = ["ADMIN", "STAFF", "MANAGER"].includes(user?.role || "");
   const canManageEmployees = ["ADMIN", "MANAGER"].includes(user?.role || "");
 
   const tabs = [
-    { id: "overview", label: t("overview"), icon: Users },
+    { id: "operations", label: t("operationsOverview"), icon: Train },
     { id: "schedule", label: t("schedule"), icon: Calendar },
     { id: "leave", label: t("leaveRequests"), icon: FileText },
     { id: "bookings", label: t("bookingManagement"), icon: BookOpen },
@@ -43,8 +44,8 @@ const EmployeeDashboard: React.FC = () => {
 
   const renderContent = () => {
     switch (activeTab) {
-      case "overview":
-        return <EmployeeStats />;
+      case "operations":
+        return <OperationsOverview />;
       case "schedule":
         return <EmployeeSchedule />;
       case "leave":
