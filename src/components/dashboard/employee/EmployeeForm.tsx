@@ -128,7 +128,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">{t("stationCode")}</label>
           <select
-            value={formData.stationCode}
+            value={formData.stationCode || "ST001"}
             onChange={(e) => {
               handleChange("stationCode", e.target.value);
               handleChange("branchLocation", t(e.target.value));

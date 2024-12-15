@@ -57,7 +57,7 @@ router.post('/', authenticateToken, async (req, res) => {
       notification_id: `N${Date.now()}`,
       passenger_id: passengerId,
       message: isArabic
-        ? 'تم تأكيد حجزك بنجاح'
+        ? 'Your booking has been confirmed'
         : 'Your booking has been confirmed',
       type: 'BOOKING_CONFIRMATION',
       created_at: new Date(),
@@ -66,7 +66,7 @@ router.post('/', authenticateToken, async (req, res) => {
 
     res.status(201).json({
       bookingId,
-      message: isArabic ? 'تم تأكيد الحجز بنجاح' : 'Booking confirmed successfully'
+      message: isArabic ? 'Booking confirmed successfully' : 'Booking confirmed successfully'
     });
   } catch (error) {
     console.error('Booking creation error:', error);

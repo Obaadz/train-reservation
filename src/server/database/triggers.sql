@@ -80,7 +80,7 @@ BEGIN
     ) VALUES (
         CONCAT('N', UNIX_TIMESTAMP()),
         NEW.pid,
-        'مرحباً بك في نظام حجز القطارات!',
+        'Welcome to the train booking system!',
         'SYSTEM',
         NOW(),
         'SENT'
@@ -120,11 +120,11 @@ BEGIN
         CONCAT('ND', UNIX_TIMESTAMP()),
         NEW.passenger_id,
         CONCAT(
-            'تذكير: رحلتك ستغادر بعد 3 ساعات من محطة ',
+            'Your journey will depart in 3 hours from ',
             station_from,
-            ' من المنصة رقم ',
+            ' platform ',
             platform_num,
-            '. نتمنى لك رحلة سعيدة!'
+            '. Have a safe journey!'
         ),
         'JOURNEY_REMINDER',
         DATE_SUB(departure_time, INTERVAL 3 HOUR),
