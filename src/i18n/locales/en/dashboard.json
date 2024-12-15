@@ -16,6 +16,7 @@
   "upcomingTrips": "Upcoming Trips",
   "averagePrice": "Average Price",
   "completedTrips": "Completed Trips",
+  "noBookings": "No Bookings",
   "mostVistedCity": "Most Visited City",
   "bookingHistory": "Booking History",
   "bookingManagement": "Booking Management",
@@ -115,6 +116,7 @@
     "passwordReset": "Error resetting password",
     "createEmployee": "Error while creating employee",
     "updateProfile": "Error while updating profile",
-    "fetchProfile": "Error while fetching profile"
+    "fetchProfile": "Error while fetching profile",
+    "fetchBookings": "Error while fetching bookings"
   }
 }

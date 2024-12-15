@@ -13,6 +13,7 @@
   "mostVisitedCity": "المدينة الأكثر زيارة",
   "fromLastMonth": "من الشهر الماضي",
   "totalBookings": "إجمالي الحجوزات",
+  "noBookings": "لا توجد حجوزات",
   "upcomingTrips": "الرحلات القادمة",
   "averagePrice": "السعر المتوسط",
   "completedTrips": "الرحلات المكتملة",
@@ -115,6 +116,7 @@
     "passwordReset": "حدث خطأ أثناء إعادة تعيين كلمة المرور",
     "createEmployee": "حدث خطأ أثناء إنشاء موظف",
     "updateProfile": "حدث خطأ أثناء تحديث الملف الشخصي",
-    "fetchProfile": "حدث خطأ أثناء جلب بيانات الملف الشخصي"
+    "fetchProfile": "حدث خطأ أثناء جلب بيانات الملف الشخصي",
+    "fetchBookings": "حدث خطأ أثناء جلب بيانات الحجوزات"
   }
 }
