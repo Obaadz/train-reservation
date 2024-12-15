@@ -8,6 +8,7 @@
   "statusBOARDING": "في الصعود",
   "statusCONFIRMED": "مؤكد",
   "statusPENDING": "معلق",
+  "statusWAITLISTED": "في قائمة الانتظار",
   "totalSpent": "الإجمالي المدفوع",
   "mostVisitedCity": "المدينة الأكثر زيارة",
   "fromLastMonth": "من الشهر الماضي",
@@ -18,6 +19,7 @@
   "mostVistedCity": "المدينة الأكثر زيارة",
   "bookingHistory": "سجل الحجوزات",
   "notifications": "الإشعارات",
+  "searchBookings": "البحث عن حجوزات",
   "welcome": "مرحباً",
   "overview": "نظرة عامة",
   "schedule": "الجدول",
@@ -35,6 +37,7 @@
   "upcomingShifts": "المناوبات القادمة",
   "weeklySchedule": "الجدول الأسبوعي",
   "newLeaveRequest": "طلب إجازة جديد",
+  "bookingManagement": "إدارة الحجوزات",
   "type": "النوع",
   "dates": "التواريخ",
   "duration": "المدة",
@@ -103,7 +106,8 @@
     "passwordReset": "تم إعادة تعيين كلمة المرور بنجاح",
     "employeeCreated": "تم إنشاء الموظف بنجاح",
     "employeeUpdated": "تم تحديث بيانات الموظف بنجاح",
-    "profileUpdated": "تم تحديث الملف الشخصي بنجاح"
+    "profileUpdated": "تم تحديث الملف الشخصي بنجاح",
+    "bookingUpdated": "تم تحديث بيانات الحجز بنجاح"
   },
   "errors": {
     "fetchPassengers": "حدث خطأ أثناء جلب بيانات المسافرين",

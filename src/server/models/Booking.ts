@@ -6,6 +6,7 @@ export interface Booking extends RowDataPacket {
   passenger_id: string;
   journey_id: string;
   train_id: string;
+  class_id: string;
   coach_number: string;
   seat_number: string;
   booking_status: 'CONFIRMED' | 'WAITLISTED' | 'CANCELLED';
@@ -16,21 +17,31 @@ export interface Booking extends RowDataPacket {
 }
 
 export const BookingModel = {
-  async create(booking: Omit<Booking, 'RowDataPacket'>): Promise<string> {
-    const [result] = await pool.query<ResultSetHeader>(
-      `INSERT INTO bookings 
-       (booking_id, passenger_id, journey_id, train_id, coach_number, 
-        seat_number, booking_status, booking_date, payment_status, 
-        payment_method, amount, class_id) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        booking.booking_id, booking.passenger_id, booking.journey_id,
-        booking.train_id, booking.coach_number, booking.seat_number,
-        booking.booking_status, booking.booking_date, booking.payment_status,
-        booking.payment_method, booking.amount, booking.class_id
-      ]
+  async findAll(): Promise<Booking[]> {
+    const [rows] = await pool.query<Booking[]>(`
+      SELECT b.*, p.name as passenger_name, 
+             js1.station_code as from_station, js2.station_code as to_station,
+             s1.name_ar as from_name_ar, s1.name_en as from_name_en,
+             s2.name_ar as to_name_ar, s2.name_en as to_name_en
+      FROM bookings b
+      JOIN passengers p ON b.passenger_id = p.pid
+      JOIN journeys j ON b.journey_id = j.jid
+      JOIN journey_stations js1 ON j.jid = js1.journey_id AND js1.sequence_number = 1
+      JOIN journey_stations js2 ON j.jid = js2.journey_id AND js2.sequence_number = 
+        (SELECT MAX(sequence_number) FROM journey_stations WHERE journey_id = j.jid)
+      JOIN stations s1 ON js1.station_code = s1.scode
+      JOIN stations s2 ON js2.station_code = s2.scode
+      ORDER BY b.booking_date DESC
+    `);
+    return rows;
+  },
+
+  async findById(bookingId: string): Promise<Booking | null> {
+    const [rows] = await pool.query<Booking[]>(
+      'SELECT * FROM bookings WHERE booking_id = ?',
+      [bookingId]
     );
-    return booking.booking_id;
+    return rows[0] || null;
   },
 
   async findByPassenger(passengerId: string): Promise<Booking[]> {

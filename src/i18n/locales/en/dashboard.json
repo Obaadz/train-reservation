@@ -8,6 +8,7 @@
   "statusBOARDING": "Boarding",
   "statusCONFIRMED": "Confirmed",
   "statusPENDING": "Pending",
+  "statusWAITLISTED": "Waitlisted",
   "totalSpent": "Total Spent",
   "mostVisitedCity": "Most Visited City",
   "fromLastMonth": "From Last Month",
@@ -17,6 +18,8 @@
   "completedTrips": "Completed Trips",
   "mostVistedCity": "Most Visited City",
   "bookingHistory": "Booking History",
+  "bookingManagement": "Booking Management",
+  "searchBookings": "Search Bookings",
   "notifications": "Notifications",
   "welcome": "Welcome",
   "overview": "Overview",
@@ -103,7 +106,8 @@
     "passwordReset": "Password reset successfully",
     "employeeCreated": "Employee created successfully",
     "employeeUpdated": "Employee details updated successfully",
-    "profileUpdated": "Profile updated successfully"
+    "profileUpdated": "Profile updated successfully",
+    "bookingUpdated": "Booking updated successfully"
   },
   "errors": {
     "fetchPassengers": "Error fetching passengers",
