@@ -11,6 +11,18 @@ import Button from "../components/common/Button";
 
 const STEPS = ["seatSelection", "passengerDetails", "payment", "confirmation"];
 
+const calculateLoyaltyDiscount = (loyaltyStatus: string, originalPrice: number): number => {
+  const discounts = {
+    BRONZE: 0,
+    SILVER: 0.05, // 5% discount
+    GOLD: 0.1, // 10% discount
+    PLATINUM: 0.15, // 15% discount
+  };
+
+  const discountRate = discounts[loyaltyStatus as keyof typeof discounts] || 0;
+  return originalPrice * (1 - discountRate);
+};
+
 const Booking: React.FC = () => {
   const { id } = useParams();
   const { t } = useTranslation(["booking"]);
@@ -124,7 +136,7 @@ const Booking: React.FC = () => {
             formData={paymentDetails}
             onChange={(field, value) => setPaymentDetails((prev) => ({ ...prev, [field]: value }))}
             onSubmit={handlePayment}
-            totalAmount={250}
+            totalAmount={calculateLoyaltyDiscount(user?.loyaltyStatus || "BRONZE", 250)}
             loading={loading}
           />
         );
