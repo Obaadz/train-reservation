@@ -135,4 +135,38 @@ router.get('/validate-seat', authenticateToken, async (req, res) => {
   }
 });
 
+router.post('/:id/cancel', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const isArabic = req.headers['accept-language']?.includes('ar');
+    if (!req.user) {
+      return res.status(401).json({
+        message: isArabic ? 'غير مصرح' : 'Unauthorized'
+      });
+    }
+    const passengerId = req.user.id;
+
+    const bookings = await BookingModel.findByPassenger(passengerId);
+    if (!bookings.find(b => b.booking_id === id)) {
+      return res.status(404).json({
+        message: isArabic ? 'الحجز غير موجود' : 'Booking not found'
+      });
+    }
+
+    await BookingModel.updateStatus(id, 'CANCELLED');
+
+    res.json({
+      message: isArabic ? 'تم إلغاء الحجز بنجاح' : 'Booking cancelled successfully'
+    });
+  }
+  catch (error) {
+    console.error('Error cancelling booking:', error);
+    res.status(500).json({
+      message: req.headers['accept-language']?.includes('ar')
+        ? 'خطأ في إلغاء الحجز'
+        : 'Error cancelling booking'
+    });
+  }
+}
+);
 export default router;
