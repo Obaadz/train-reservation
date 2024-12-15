@@ -19,7 +19,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
   onResetPassword,
 }) => {
   const { t } = useTranslation(["dashboard"]);
-  console.log(employees);
+
   const columns = [
     { key: "name", header: t("name") },
     { key: "email", header: t("email") },
@@ -31,13 +31,21 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
       header: t("actions"),
       render: (employee: Employee) => (
         <div className="flex gap-2">
-          <Button variant="ghost" size="sm" onClick={() => onEdit(employee)}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              onEdit(employee);
+            }}
+          >
             <Edit className="w-4 h-4" />
           </Button>
-          {employee && employee.canLogin && (
+          {employee && employee.canLogin ? (
             <Button variant="ghost" size="sm" onClick={() => onResetPassword(employee)}>
               <Key className="w-4 h-4" />
             </Button>
+          ) : (
+            ""
           )}
         </div>
       ),

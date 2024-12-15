@@ -87,9 +87,12 @@
   "ST001": "Riyadh Station",
   "ST002": "Jeddah Station",
   "ST003": "Dammam Station",
+  "passwordEmptyForNoChangePlaceholder": "Leave blank if you don't want to change the password",
   "success": {
     "passengerUpdated": "Passenger details updated successfully",
-    "passwordReset": "Password reset successfully"
+    "passwordReset": "Password reset successfully",
+    "employeeCreated": "Employee created successfully",
+    "employeeUpdated": "Employee details updated successfully"
   },
   "errors": {
     "fetchPassengers": "Error fetching passengers",

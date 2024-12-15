@@ -37,6 +37,9 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!formData.password) setFormData((prev) => ({ ...prev, password: undefined }));
+
     await onSubmit(formData as CreateEmployeeData);
   };
 
@@ -154,7 +157,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
           </label>
         </div>
 
-        {formData.canLogin && (
+        {formData.canLogin ? (
           <>
             <FormField
               label={t("email")}
@@ -164,16 +167,18 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
               onChange={(e) => handleChange("email", e.target.value)}
             />
 
-            {!initialData && (
+            {
               <FormField
                 label={t("password")}
                 type="password"
-                required
                 value={formData.password}
                 onChange={(e) => handleChange("password", e.target.value)}
+                placeholder={t("passwordEmptyForNoChangePlaceholder")}
               />
-            )}
+            }
           </>
+        ) : (
+          ""
         )}
       </div>
 

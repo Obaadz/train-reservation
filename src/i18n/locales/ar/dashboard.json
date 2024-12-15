@@ -87,9 +87,12 @@
   "ST001": "محطة الرياض",
   "ST002": "محطة جدة",
   "ST003": "محطة الدمام",
+  "passwordEmptyForNoChangePlaceholder": "اتركها فارغة إذا لم ترغب في تغيير كلمة المرور",
   "success": {
     "passengerUpdated": "تم تحديث بيانات المسافر بنجاح",
-    "passwordReset": "تم إعادة تعيين كلمة المرور بنجاح"
+    "passwordReset": "تم إعادة تعيين كلمة المرور بنجاح",
+    "employeeCreated": "تم إنشاء الموظف بنجاح",
+    "employeeUpdated": "تم تحديث بيانات الموظف بنجاح"
   },
   "errors": {
     "fetchPassengers": "حدث خطأ أثناء جلب بيانات المسافرين",

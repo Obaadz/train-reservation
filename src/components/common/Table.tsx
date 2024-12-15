@@ -54,7 +54,7 @@ const Table: React.FC<TableProps> = ({
             <tr key={rowIndex}>
               {columns.map((column) => (
                 <td key={column.key} className="px-6 py-4 whitespace-nowrap">
-                  {column.render ? column.render(row[column.key]) : row[column.key]}
+                  {column.render ? column.render(row) : row[column.key]}
                 </td>
               ))}
             </tr>
