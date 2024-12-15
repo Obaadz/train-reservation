@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { BookingModel } from '../models/Booking';
 import { authenticateToken, isEmployee } from '../middleware/auth';
+import { PassengerModel } from '../models/Passenger';
 
 const router = Router();
 
@@ -64,6 +65,12 @@ router.get('/:id', authenticateToken, async (req, res) => {
           ? 'الحجز غير موجود'
           : 'Booking not found'
       });
+    }
+
+    try {
+      await PassengerModel.updateLoyaltyPoints(booking.passengerId, 50);
+    } catch (err) {
+      console.error(err)
     }
 
     res.json(booking);
