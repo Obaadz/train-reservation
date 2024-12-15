@@ -120,6 +120,7 @@
   "newPassenger": "إضافة مسافر",
   "existingPassenger": "مسافر موجود",
   "paymentMethod": "طريقة الدفع",
+  "waitlistedMessage": "سيتم إضافة الحجز إلى قائمة الانتظار",
   "success": {
     "passengerUpdated": "تم تحديث بيانات المسافر بنجاح",
     "passwordReset": "تم إعادة تعيين كلمة المرور بنجاح",

@@ -112,7 +112,8 @@ const BookingHistory: React.FC = () => {
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {booking.booking_status === "CONFIRMED" && (
+                  {(booking.booking_status === "WAITLISTED" ||
+                    booking.booking_status === "CONFIRMED") && (
                     <button
                       onClick={() => handleCancel(booking.booking_id)}
                       className="text-red-600 hover:text-red-900"

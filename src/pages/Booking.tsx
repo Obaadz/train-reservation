@@ -14,9 +14,9 @@ const STEPS = ["seatSelection", "passengerDetails", "payment", "confirmation"];
 const calculateLoyaltyDiscount = (loyaltyStatus: string, originalPrice: number): number => {
   const discounts = {
     BRONZE: 0,
-    SILVER: 0.05, // 5% discount
-    GOLD: 0.1, // 10% discount
-    PLATINUM: 0.15, // 15% discount
+    SILVER: 0.05,
+    GOLD: 0.1,
+    PLATINUM: 0.15,
   };
 
   const discountRate = discounts[loyaltyStatus as keyof typeof discounts] || 0;
@@ -32,6 +32,7 @@ const Booking: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [selectedSeat, setSelectedSeat] = useState("");
+  const [isWaitlisted, setIsWaitlisted] = useState(false);
   const [passengerDetails, setPassengerDetails] = useState({
     name: user?.name || "",
     email: user?.email || "",
@@ -55,9 +56,9 @@ const Booking: React.FC = () => {
   }, [isAuthenticated, navigate]);
 
   const handleNext = () => {
-    if (currentStep === 0 && !selectedSeat) {
-      showToast(t("errors.selectSeat"), "error");
-      return;
+    if (currentStep === 0 && !selectedSeat && !isWaitlisted) {
+      // showToast(t("errors.selectSeat"), "error");
+      // return;
     }
 
     if (currentStep === 1) {
@@ -74,13 +75,15 @@ const Booking: React.FC = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 0));
   };
 
+  const handleWaitlistSelect = () => {
+    setIsWaitlisted(true);
+    setSelectedSeat("");
+    handleNext();
+  };
+
   const handlePayment = async () => {
     setLoading(true);
     try {
-      // Simulate payment processing
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // Create booking
       const response = await fetch("http://localhost:3001/api/bookings", {
         method: "POST",
         headers: {
@@ -90,6 +93,7 @@ const Booking: React.FC = () => {
         body: JSON.stringify({
           journeyId: id,
           seatNumber: selectedSeat,
+          isWaitlisted,
           passengerDetails,
           paymentDetails: {
             method: "CREDIT_CARD",
@@ -101,7 +105,7 @@ const Booking: React.FC = () => {
       if (!response.ok) throw new Error();
 
       showToast(t("success.bookingConfirmed"), "success");
-      setCurrentStep(3); // Move to confirmation step
+      setCurrentStep(3);
     } catch (error) {
       showToast(t("errors.bookingFailed"), "error");
     } finally {
@@ -119,6 +123,7 @@ const Booking: React.FC = () => {
             availableSeats={["A1", "A2", "B1", "B2", "C1", "C2"]}
             coachClass="ECONOMY"
             journeyId={id!}
+            onWaitlistSelect={handleWaitlistSelect}
           />
         );
       case 1:
@@ -133,7 +138,7 @@ const Booking: React.FC = () => {
       case 2:
         return (
           <PaymentForm
-            formData={paymentDetails}
+            formData={{ ...paymentDetails, selectedSeat }}
             onChange={(field, value) => setPaymentDetails((prev) => ({ ...prev, [field]: value }))}
             onSubmit={handlePayment}
             totalAmount={calculateLoyaltyDiscount(user?.loyaltyStatus || "BRONZE", 250)}
@@ -164,6 +169,11 @@ const Booking: React.FC = () => {
             <p className="text-gray-600 mb-6">
               {t("success.bookingReference")}: BOK-{Date.now().toString().slice(-6)}
             </p>
+            {isWaitlisted && (
+              <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-left">
+                <p className="text-yellow-800">{t("waitlistConfirmation")}</p>
+              </div>
+            )}
             <Button onClick={() => navigate("/dashboard")}>{t("viewBookings")}</Button>
           </div>
         );

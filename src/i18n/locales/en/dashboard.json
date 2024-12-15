@@ -122,6 +122,7 @@
   "newPassenger": "New Passenger",
   "existingPassenger": "Existing Passenger",
   "paymentMethod": "Payment Method",
+  "waitlistedMessage": "This booking is waitlisted. because the train is full",
   "success": {
     "passengerUpdated": "Passenger details updated successfully",
     "passwordReset": "Password reset successfully",

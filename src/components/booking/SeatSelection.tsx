@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useReservation } from "../../hooks/useReservation";
+import Button from "../common/Button";
+import { AlertCircle } from "lucide-react";
 
 interface SeatSelectionProps {
   selectedSeat: string;
@@ -8,6 +10,7 @@ interface SeatSelectionProps {
   availableSeats: string[];
   coachClass: "FIRST" | "BUSINESS" | "ECONOMY";
   journeyId: string;
+  onWaitlistSelect: () => void;
 }
 
 const SeatSelection: React.FC<SeatSelectionProps> = ({
@@ -16,10 +19,10 @@ const SeatSelection: React.FC<SeatSelectionProps> = ({
   availableSeats,
   coachClass,
   journeyId,
+  onWaitlistSelect,
 }) => {
   const { t } = useTranslation(["booking"]);
   const reservation = useReservation();
-
   const [validSeats, setValidSeats] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
@@ -52,7 +55,7 @@ const SeatSelection: React.FC<SeatSelectionProps> = ({
   const renderSeat = (seatNumber: string) => {
     const isAvailable = availableSeats.includes(seatNumber);
     const isSelected = selectedSeat === seatNumber;
-    const isValidSeat = validSeats[seatNumber] ?? true; // Assume true until validation completes
+    const isValidSeat = validSeats[seatNumber] ?? true;
 
     return (
       <button
@@ -72,36 +75,56 @@ const SeatSelection: React.FC<SeatSelectionProps> = ({
     );
   };
 
+  const showWaitlistOption = availableSeats.length === 0;
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       <h3 className="text-lg font-semibold mb-4">{t("seatSelection")}</h3>
-      <div className="flex justify-center mb-6">
-        <div className="flex gap-4 items-center">
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-white border-2 border-indigo-200 rounded" />
-            <span className="text-sm">{t("available")}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-indigo-600 rounded" />
-            <span className="text-sm">{t("selected")}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-gray-100 rounded" />
-            <span className="text-sm">{t("occupied")}</span>
+
+      {showWaitlistOption ? (
+        <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5" />
+            <div>
+              <h4 className="font-medium text-yellow-800">{t("noSeatsAvailable")}</h4>
+              <p className="text-sm text-yellow-700 mt-1">{t("waitlistDescription")}</p>
+              <Button onClick={onWaitlistSelect} variant="outline" className="mt-3">
+                {t("joinWaitlist")}
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div className="grid gap-4 justify-center">
-        {Array.from({ length: rows }).map((_, rowIndex) => (
-          <div key={rowIndex} className="flex gap-4">
-            {Array.from({ length: seatsPerRow }).map((_, seatIndex) => {
-              const seatNumber = `${String.fromCharCode(65 + rowIndex)}${seatIndex + 1}`;
-              return renderSeat(seatNumber);
-            })}
+      ) : (
+        <>
+          <div className="flex justify-center mb-6">
+            <div className="flex gap-4 items-center">
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 bg-white border-2 border-indigo-200 rounded" />
+                <span className="text-sm">{t("available")}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 bg-indigo-600 rounded" />
+                <span className="text-sm">{t("selected")}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 bg-gray-100 rounded" />
+                <span className="text-sm">{t("occupied")}</span>
+              </div>
+            </div>
           </div>
-        ))}
-      </div>
+
+          <div className="grid gap-4 justify-center">
+            {Array.from({ length: rows }).map((_, rowIndex) => (
+              <div key={rowIndex} className="flex gap-4">
+                {Array.from({ length: seatsPerRow }).map((_, seatIndex) => {
+                  const seatNumber = `${String.fromCharCode(65 + rowIndex)}${seatIndex + 1}`;
+                  return renderSeat(seatNumber);
+                })}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 };

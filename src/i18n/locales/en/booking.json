@@ -11,6 +11,7 @@
   "passengerDetails": "Passenger Details",
   "seatSelection": "Select Seat",
   "payment": "Payment",
+  "waitlistedMessage": "This booking is waitlisted. because the train is full",
   "confirmation": "Booking Confirmation",
   "departureTime": "Departure Time",
   "arrivalTime": "Arrival Time",

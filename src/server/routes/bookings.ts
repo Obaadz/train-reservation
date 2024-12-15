@@ -7,6 +7,28 @@ import { NotificationModel } from '../models/Notification';
 import { LoyaltyStatus } from '../types/database';
 
 const router = Router();
+// cancel
+router.post('/:id/cancel', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const isArabic = req.headers['accept-language']?.includes('ar');
+
+    await BookingModel.updateStatus(id, 'CANCELLED');
+
+    res.json({
+      message: isArabic
+        ? 'تم إلغاء الحجز بنجاح'
+        : 'Booking cancelled successfully'
+    });
+  } catch (error) {
+    console.error('Error cancelling booking:', error);
+    res.status(500).json({
+      message: req.headers['accept-language']?.includes('ar')
+        ? 'خطأ في إلغاء الحجز'
+        : 'Error cancelling booking'
+    });
+  }
+})
 
 router.get('/my-bookings', authenticateToken, async (req, res) => {
   console.log('tes')
@@ -92,7 +114,7 @@ router.post('/', authenticateToken, async (req, res) => {
       train_id: journey.train_id,
       class_id: "TC002",
       seat_number: seatNumber,
-      booking_status: 'CONFIRMED',
+      booking_status: seatNumber ? 'CONFIRMED' : "WAITLISTED",
       booking_date: new Date(),
       payment_status: 'COMPLETED',
       payment_method: paymentDetails.method,

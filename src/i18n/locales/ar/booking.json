@@ -18,6 +18,7 @@
   "departureTime": "موعد المغادرة",
   "arrivalTime": "موعد الوصول",
   "trainNumber": "رقم القطار",
+  "waitlistedMessage": "سيتم إضافة الحجز إلى قائمة الانتظار",
   "platform": "رصيف",
   "coach": "عربة",
   "seat": "مقعد",

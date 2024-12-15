@@ -60,6 +60,9 @@ const SeatSelectionModal: React.FC<SeatSelectionModalProps> = ({
           availableSeats={["A1", "A2", "B1", "B2", "C1", "C2"]}
           coachClass={selectedClass as any}
           journeyId={journeyId}
+          onWaitlistSelect={function (): void {
+            throw new Error("Function not implemented.");
+          }}
         />
 
         {/* Action Buttons */}
