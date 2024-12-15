@@ -13,6 +13,7 @@
   "next": "التالي",
   "cancel": "إلغاء",
   "confirm": "تأكيد",
+  "allFieldsRequired": "جميع الحقول مطلوبة",
   "loyaltyDiscount": "خصم {{status}} للأعضاء",
   "notifications": {
     "markAsRead": "تم القراءة"

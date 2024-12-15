@@ -119,6 +119,9 @@
   "addBooking": "Add Booking",
   "createBooking": "Create Booking",
   "searchResults": "Search Results",
+  "newPassenger": "New Passenger",
+  "existingPassenger": "Existing Passenger",
+  "paymentMethod": "Payment Method",
   "success": {
     "passengerUpdated": "Passenger details updated successfully",
     "passwordReset": "Password reset successfully",

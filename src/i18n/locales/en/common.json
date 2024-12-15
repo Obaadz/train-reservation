@@ -12,6 +12,7 @@
   "error": "Error",
   "next": "Next",
   "cancel": "Cancel",
+  "allFieldsRequired": "All fields are required",
   "confirm": "Confirm",
   "loyaltyDiscount": "{{status}} Member Discount",
   "notifications": {

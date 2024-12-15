@@ -8,6 +8,7 @@ import { useAuth } from "../../contexts/AuthContext";
 
 interface JourneyCardProps {
   journey: Journey;
+  onEmployeePage?: boolean;
 }
 
 const calculateLoyaltyDiscount = (loyaltyStatus: string, originalPrice: number): number => {
@@ -22,7 +23,7 @@ const calculateLoyaltyDiscount = (loyaltyStatus: string, originalPrice: number):
   return originalPrice * (1 - discountRate);
 };
 
-const JourneyCard: React.FC<JourneyCardProps> = ({ journey }) => {
+const JourneyCard: React.FC<JourneyCardProps> = ({ journey, onEmployeePage }) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
@@ -148,20 +149,24 @@ const JourneyCard: React.FC<JourneyCardProps> = ({ journey }) => {
                   </span>
                 </div>
               </div>
-              <div className="flex items-center gap-1 justify-end">
-                <CreditCard className="w-4 h-4 text-gray-400" />
-                {renderPrice(classOption)}
-              </div>
+              {!onEmployeePage && (
+                <div className="flex items-center gap-1 justify-end">
+                  <CreditCard className="w-4 h-4 text-gray-400" />
+                  {renderPrice(classOption)}
+                </div>
+              )}
             </div>
           ))}
         </div>
 
-        <button
-          onClick={handleBooking}
-          className="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-        >
-          {t("common:book")}
-        </button>
+        {!onEmployeePage && (
+          <button
+            onClick={handleBooking}
+            className="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+          >
+            {t("common:book")}
+          </button>
+        )}
       </div>
     </div>
   );

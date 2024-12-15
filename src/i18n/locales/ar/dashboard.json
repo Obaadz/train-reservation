@@ -117,6 +117,9 @@
   "editBooking": "تعديل بيانات الحجز",
   "trainId": "رقم القطار",
   "addBooking": "إضافة حجز",
+  "newPassenger": "إضافة مسافر",
+  "existingPassenger": "مسافر موجود",
+  "paymentMethod": "طريقة الدفع",
   "success": {
     "passengerUpdated": "تم تحديث بيانات المسافر بنجاح",
     "passwordReset": "تم إعادة تعيين كلمة المرور بنجاح",

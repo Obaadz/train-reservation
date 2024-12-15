@@ -36,19 +36,23 @@ export const BookingModel = {
 
   async findAll(): Promise<Booking[]> {
     const [rows] = await pool.query<Booking[]>(`
-      SELECT b.*, p.name as passenger_name, 
-             js1.station_code as from_station, js2.station_code as to_station,
-             s1.name_ar as from_name_ar, s1.name_en as from_name_en,
-             s2.name_ar as to_name_ar, s2.name_en as to_name_en
-      FROM bookings b
-      JOIN passengers p ON b.passenger_id = p.pid
-      JOIN journeys j ON b.journey_id = j.jid
-      JOIN journey_stations js1 ON j.jid = js1.journey_id AND js1.sequence_number = 1
-      JOIN journey_stations js2 ON j.jid = js2.journey_id AND js2.sequence_number = 
-        (SELECT MAX(sequence_number) FROM journey_stations WHERE journey_id = j.jid)
-      JOIN stations s1 ON js1.station_code = s1.scode
-      JOIN stations s2 ON js2.station_code = s2.scode
-      ORDER BY b.booking_date DESC
+     SELECT b.*, p.name as passenger_name,
+       js1.station_code as from_station, js2.station_code as to_station,
+       s1.name_ar as from_name_ar, s1.name_en as from_name_en,
+       s2.name_ar as to_name_ar, s2.name_en as to_name_en
+FROM bookings b
+INNER JOIN passengers p ON b.passenger_id = p.pid
+INNER JOIN journeys j ON b.journey_id = j.jid
+LEFT JOIN journey_stations js1 ON j.jid = js1.journey_id AND js1.sequence_number = 1
+LEFT JOIN journey_stations js2 ON j.jid = js2.journey_id
+    AND js2.sequence_number = (
+        SELECT MAX(sequence_number) 
+        FROM journey_stations 
+        WHERE journey_id = j.jid
+    )
+LEFT JOIN stations s1 ON js1.station_code = s1.scode
+LEFT JOIN stations s2 ON js2.station_code = s2.scode
+ORDER BY b.booking_date DESC;
     `);
     return rows;
   },

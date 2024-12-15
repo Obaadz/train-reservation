@@ -4,6 +4,7 @@ import { JourneyModel } from '../models/Journey';
 import { authenticateToken, isEmployee } from '../middleware/auth';
 import { PassengerModel } from '../models/Passenger';
 import { NotificationModel } from '../models/Notification';
+import { LoyaltyStatus } from '../types/database';
 
 const router = Router();
 
@@ -34,14 +35,41 @@ router.get('/my-bookings', authenticateToken, async (req, res) => {
 // Create new booking
 router.post('/', authenticateToken, async (req, res) => {
   try {
-    const { journeyId, classId, seatNumber, passengerDetails, paymentDetails } = req.body;
+    const { journeyId, classId, seatNumber, passengerDetails, paymentDetails, passenger_id } = req.body;
     const isArabic = req.headers['accept-language']?.includes('ar');
     if (!req.user) {
       return res.status(401).json({
         message: isArabic ? 'غير مصرح' : 'Unauthorized'
       });
     }
-    const passengerId = req.user.id;
+    let pid: string = "";
+
+    if (req.user.userType == 'employee') {
+      const existingPassenger = await PassengerModel.findByEmail(passengerDetails.email);
+      if (existingPassenger) {
+        return res.status(400).json({
+          message: isArabic
+            ? 'البريد الإلكتروني مستخدم بالفعل'
+            : 'Email already exists'
+        });
+      }
+
+      pid = `P${Date.now()}`;
+
+      await PassengerModel.create({
+        pid,
+        name: passengerDetails.name,
+        email: passengerDetails.email,
+        password: "Password111",
+        phone: passengerDetails.phone,
+        loyalty_status: 'BRONZE' as LoyaltyStatus,
+        loyalty_points: 0
+      });
+    }
+
+    const passengerId = passenger_id || pid || req.user.id;
+    console.log("required fields:", journeyId, seatNumber, paymentDetails)
+    console.log("body:", req.body)
 
     // Check if journey exists and has available seats
     const journey = await JourneyModel.findById(journeyId);

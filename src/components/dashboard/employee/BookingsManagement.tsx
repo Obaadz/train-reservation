@@ -66,7 +66,7 @@ const BookingsManagement: React.FC = () => {
 
   useEffect(() => {
     fetchBookings();
-  }, []);
+  }, [isAddModalOpen]);
 
   const handleUpdateBooking = async () => {
     try {
