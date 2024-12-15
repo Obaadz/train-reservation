@@ -187,10 +187,10 @@ const PassengerManagement: React.FC = () => {
             <div className="space-y-4">
               <FormField label={t("name")} name="name" defaultValue={selectedPassenger.name} />
               <FormField
-                label={t("loyaltyPoints")}
+                label={t("increaseDecreaseLoyaltyPoints")}
                 name="loyalty_points"
                 type="number"
-                defaultValue={selectedPassenger.loyalty_points.toString()}
+                defaultValue={0}
               />
               <div className="flex justify-end gap-2">
                 <Button variant="outline" onClick={() => setIsEditModalOpen(false)}>

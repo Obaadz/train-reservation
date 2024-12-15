@@ -87,17 +87,23 @@
   "ST001": "محطة الرياض",
   "ST002": "محطة جدة",
   "ST003": "محطة الدمام",
+  "full_time": "دوام كامل",
+  "part_time": "دوام جزئي",
   "passwordEmptyForNoChangePlaceholder": "اتركها فارغة إذا لم ترغب في تغيير كلمة المرور",
+  "increaseDecreaseLoyaltyPoints": "زيادة أو تقليل نقاط الولاء",
   "success": {
     "passengerUpdated": "تم تحديث بيانات المسافر بنجاح",
     "passwordReset": "تم إعادة تعيين كلمة المرور بنجاح",
     "employeeCreated": "تم إنشاء الموظف بنجاح",
-    "employeeUpdated": "تم تحديث بيانات الموظف بنجاح"
+    "employeeUpdated": "تم تحديث بيانات الموظف بنجاح",
+    "profileUpdated": "تم تحديث الملف الشخصي بنجاح"
   },
   "errors": {
     "fetchPassengers": "حدث خطأ أثناء جلب بيانات المسافرين",
     "updatePassenger": "حدث خطأ أثناء تحديث بيانات المسافر",
     "passwordReset": "حدث خطأ أثناء إعادة تعيين كلمة المرور",
-    "createEmployee": "حدث خطأ أثناء إنشاء موظف"
+    "createEmployee": "حدث خطأ أثناء إنشاء موظف",
+    "updateProfile": "حدث خطأ أثناء تحديث الملف الشخصي",
+    "fetchProfile": "حدث خطأ أثناء جلب بيانات الملف الشخصي"
   }
 }

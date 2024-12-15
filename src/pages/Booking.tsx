@@ -36,6 +36,10 @@ const Booking: React.FC = () => {
     if (!isAuthenticated) {
       navigate("/login");
     }
+
+    if (user?.userType == "employee") {
+      navigate("/employee/dashboard");
+    }
   }, [isAuthenticated, navigate]);
 
   const handleNext = () => {
@@ -62,7 +66,7 @@ const Booking: React.FC = () => {
     setLoading(true);
     try {
       // Simulate payment processing
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1500));
 
       // Create booking
       const response = await fetch("http://localhost:3000/api/bookings", {
@@ -117,9 +121,7 @@ const Booking: React.FC = () => {
         return (
           <PaymentForm
             formData={paymentDetails}
-            onChange={(field, value) =>
-              setPaymentDetails((prev) => ({ ...prev, [field]: value }))
-            }
+            onChange={(field, value) => setPaymentDetails((prev) => ({ ...prev, [field]: value }))}
             onSubmit={handlePayment}
             totalAmount={250}
             loading={loading}
@@ -149,9 +151,7 @@ const Booking: React.FC = () => {
             <p className="text-gray-600 mb-6">
               {t("success.bookingReference")}: BOK-{Date.now().toString().slice(-6)}
             </p>
-            <Button onClick={() => navigate("/dashboard")}>
-              {t("viewBookings")}
-            </Button>
+            <Button onClick={() => navigate("/dashboard")}>{t("viewBookings")}</Button>
           </div>
         );
       default:
@@ -161,9 +161,7 @@ const Booking: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">
-        {t("title")}
-      </h1>
+      <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">{t("title")}</h1>
 
       <BookingSteps currentStep={currentStep} steps={STEPS} />
 

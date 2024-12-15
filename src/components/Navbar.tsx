@@ -27,7 +27,10 @@ const Navbar: React.FC = () => {
 
             {isAuthenticated ? (
               <>
-                <Link to="/dashboard" className="hover:text-indigo-600 transition-colors">
+                <Link
+                  to={user?.userType == "passenger" ? "/dashboard" : "/employee/dashboard"}
+                  className="hover:text-indigo-600 transition-colors"
+                >
                   {t("dashboard")}
                 </Link>
                 <NotificationPanel />

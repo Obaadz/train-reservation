@@ -87,17 +87,23 @@
   "ST001": "Riyadh Station",
   "ST002": "Jeddah Station",
   "ST003": "Dammam Station",
+  "full_time": "Full Time",
+  "part_time": "Part Time",
   "passwordEmptyForNoChangePlaceholder": "Leave blank if you don't want to change the password",
+  "increaseDecreaseLoyaltyPoints": "Increase/Decrease Loyalty Points",
   "success": {
     "passengerUpdated": "Passenger details updated successfully",
     "passwordReset": "Password reset successfully",
     "employeeCreated": "Employee created successfully",
-    "employeeUpdated": "Employee details updated successfully"
+    "employeeUpdated": "Employee details updated successfully",
+    "profileUpdated": "Profile updated successfully"
   },
   "errors": {
     "fetchPassengers": "Error fetching passengers",
     "updatePassenger": "Error updating passenger",
     "passwordReset": "Error resetting password",
-    "createEmployee": "Error while creating employee"
+    "createEmployee": "Error while creating employee",
+    "updateProfile": "Error while updating profile",
+    "fetchProfile": "Error while fetching profile"
   }
 }

@@ -5,6 +5,52 @@ import bcrypt from 'bcryptjs';
 
 const router = Router();
 
+
+// Get employee profile
+router.get('/profile', authenticateToken, async (req, res) => {
+  try {
+    if (!req.user || req.user.userType !== 'employee') {
+      return res.status(401).json({
+        message: req.headers['accept-language']?.includes('ar')
+          ? 'غير مصرح'
+          : 'Unauthorized'
+      });
+    }
+
+    const employee = await EmployeeModel.findById(req.user.id);
+    if (!employee) {
+      return res.status(404).json({
+        message: req.headers['accept-language']?.includes('ar')
+          ? 'الموظف غير موجود'
+          : 'Employee not found'
+      });
+    }
+
+    // Format the response
+    const profile = {
+      id: employee.eid,
+      name: `${employee.first_name} ${employee.middle_name || ''} ${employee.last_name}`.trim(),
+      email: employee.email,
+      role: employee.role,
+      contractType: employee.contract_type,
+      shiftType: employee.shift_type,
+      branchLocation: employee.branch_location,
+      stationCode: employee.station_code,
+      hireDate: employee.hire_date,
+      salary: employee.salary
+    };
+
+    res.json(profile);
+  } catch (error) {
+    console.error('Error fetching employee profile:', error);
+    res.status(500).json({
+      message: req.headers['accept-language']?.includes('ar')
+        ? 'خطأ في جلب بيانات الموظف'
+        : 'Error fetching employee profile'
+    });
+  }
+});
+
 // Get all employees (admin only)
 router.get('/', authenticateToken, async (req, res) => {
   try {
