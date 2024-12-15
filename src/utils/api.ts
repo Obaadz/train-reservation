@@ -71,23 +71,23 @@ export const createApiClient = (getToken: () => string | null) => {
   };
 
   return {
-    get: (endpoint: string, options?: RequestOptions) => 
+    get: (endpoint: string, options?: RequestOptions) =>
       request(endpoint, { ...options, method: 'GET' }),
-    
+
     post: (endpoint: string, data?: any, options?: RequestOptions) =>
-      request(endpoint, { 
-        ...options, 
+      request(endpoint, {
+        ...options,
         method: 'POST',
         body: JSON.stringify(data)
       }),
-    
+
     put: (endpoint: string, data?: any, options?: RequestOptions) =>
       request(endpoint, {
         ...options,
         method: 'PUT',
         body: JSON.stringify(data)
       }),
-    
+
     delete: (endpoint: string, options?: RequestOptions) =>
       request(endpoint, { ...options, method: 'DELETE' }),
   };
@@ -98,3 +98,6 @@ export const useApi = () => {
   const token = localStorage.getItem('token');
   return createApiClient(() => token);
 };
+
+// Add this export
+export const api = createApiClient(() => localStorage.getItem('token'));

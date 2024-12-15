@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface Column {
   key: string;
@@ -17,7 +17,7 @@ const Table: React.FC<TableProps> = ({
   columns,
   data,
   loading = false,
-  emptyMessage = 'No data available'
+  emptyMessage = "No data available",
 }) => {
   if (loading) {
     return (
@@ -31,11 +31,7 @@ const Table: React.FC<TableProps> = ({
   }
 
   if (!data.length) {
-    return (
-      <div className="text-center py-8 text-gray-500">
-        {emptyMessage}
-      </div>
-    );
+    return <div className="text-center py-8 text-gray-500">{emptyMessage}</div>;
   }
 
   return (
@@ -46,7 +42,7 @@ const Table: React.FC<TableProps> = ({
             {columns.map((column) => (
               <th
                 key={column.key}
-                className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
                 {column.header}
               </th>

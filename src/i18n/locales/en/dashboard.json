@@ -83,6 +83,10 @@
   "manager": "Manager",
   "receptionist": "Receptionist",
   "stationCode": "Station Code",
+  "editEmployee": "Edit Employee",
+  "ST001": "Riyadh Station",
+  "ST002": "Jeddah Station",
+  "ST003": "Dammam Station",
   "success": {
     "passengerUpdated": "Passenger details updated successfully",
     "passwordReset": "Password reset successfully"
@@ -90,6 +94,7 @@
   "errors": {
     "fetchPassengers": "Error fetching passengers",
     "updatePassenger": "Error updating passenger",
-    "passwordReset": "Error resetting password"
+    "passwordReset": "Error resetting password",
+    "createEmployee": "Error while creating employee"
   }
 }

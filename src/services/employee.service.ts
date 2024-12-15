@@ -1,20 +1,40 @@
-import { createApiClient } from '../utils/api';
+import { api } from '../utils/api';
 
-const api = createApiClient(() => localStorage.getItem('token'));
+export interface Employee {
+  eid: string;
+  name: string;
+  email?: string;
+  role: string;
+  salary: number;
+  contractType: string;
+  shiftType: string;
+  branchLocation: string;
+  stationCode?: string;
+  hireDate: string;
+  canLogin: boolean;
+}
+
+export interface CreateEmployeeData {
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  email?: string;
+  password?: string;
+  salary: number;
+  contractType: string;
+  shiftType: string;
+  branchLocation: string;
+  role: string;
+  stationCode?: string;
+  canLogin: boolean;
+}
 
 export const employeeService = {
-  getProfile: () =>
-    api.get('/employees/profile'),
+  getAll: () => api.get('/employees'),
 
-  getSchedule: (month: string) =>
-    api.get('/employees/schedule', { params: { month } }),
+  create: (data: CreateEmployeeData) => api.post('/employees', data),
 
-  getLeaveRequests: () =>
-    api.get('/employees/leave-requests'),
+  update: (id: string, data: Partial<CreateEmployeeData>) => api.put(`/employees/${id}`, data),
 
-  submitLeaveRequest: (data: any) =>
-    api.post('/employees/leave-requests', data),
-
-  updateProfile: (data: any) =>
-    api.put('/employees/profile', data),
+  resetPassword: (id: string, password: string) => api.post(`/employees/${id}/reset-password`, { password })
 };
