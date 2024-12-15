@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Calendar, MapPin, Clock, Edit, X, Search } from "lucide-react";
+import { Calendar, MapPin, Clock, Edit, X, Search, Plus } from "lucide-react";
 import Table from "../../common/Table";
 import { useApi } from "../../../utils/api";
 import { useToast } from "../../../contexts/ToastContext";
@@ -10,6 +10,7 @@ import FormField from "../../auth/FormField";
 import Loading from "../../common/Loading";
 import { trainClasses } from "../../../data/trainClasses";
 import { useBookings } from "../../../hooks/useBookings";
+import AddBookingModal from "./addBookingModal";
 
 interface BookingFormData {
   passenger_name: string;
@@ -44,6 +45,7 @@ const BookingsManagement: React.FC = () => {
   });
   const api = useApi();
   const { showToast } = useToast();
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   useEffect(() => {
     if (selectedBooking) {
@@ -148,8 +150,12 @@ const BookingsManagement: React.FC = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder={t("searchBookings")}
-            className="pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+            className="pl-10 pr-4 me-2 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
           />
+          <Button onClick={() => setIsAddModalOpen(true)} leftIcon={<Plus className="w-4 h-4" />}>
+            {t("addBooking")}
+          </Button>
+          <AddBookingModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} />
         </div>
       </div>
 

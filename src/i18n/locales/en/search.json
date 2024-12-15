@@ -11,5 +11,6 @@
   "noResults": "No journeys available",
   "availableSeats": "Available Seats",
   "duration": "Duration",
-  "price": "Price"
+  "price": "Price",
+  "searchResults": "Search Results"
 }

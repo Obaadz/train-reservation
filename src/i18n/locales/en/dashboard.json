@@ -116,6 +116,9 @@
   "class": "Class",
   "editBooking": "Edit Booking",
   "trainId": "Train ID",
+  "addBooking": "Add Booking",
+  "createBooking": "Create Booking",
+  "searchResults": "Search Results",
   "success": {
     "passengerUpdated": "Passenger details updated successfully",
     "passwordReset": "Password reset successfully",

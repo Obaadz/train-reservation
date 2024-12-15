@@ -11,5 +11,6 @@
   "noResults": "لا توجد رحلات متاحة",
   "availableSeats": "المقاعد المتاحة",
   "duration": "مدة الرحلة",
-  "price": "السعر"
+  "price": "السعر",
+  "searchResults": "نتائج البحث"
 }
