@@ -106,6 +106,7 @@ const Booking: React.FC = () => {
             onSeatSelect={setSelectedSeat}
             availableSeats={["A1", "A2", "B1", "B2", "C1", "C2"]}
             coachClass="ECONOMY"
+            journeyId={id!}
           />
         );
       case 1:

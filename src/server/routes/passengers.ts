@@ -44,17 +44,17 @@ router.get('/metrics', authenticateToken, async (req, res) => {
 
     // Get all bookings for the passenger
     const bookings = await BookingModel.findByPassenger(passengerId);
-
+    console.log(bookings)
     // Calculate metrics
     const metrics = {
       totalBookings: bookings.length,
       activeJourneys: bookings.filter(b => b.booking_status === 'CONFIRMED' && new Date(b.departure_time) > new Date()).length,
-      totalSpent: Number(bookings.reduce((sum, b) => sum + b.amount, 0)).toFixed(2),
+      totalSpent: Number(bookings.reduce((sum, b) => sum + Number(b.amount), 0)),
       upcomingTrips: bookings.filter(b => b.booking_status === 'CONFIRMED' && new Date(b.departure_time) > new Date()).length,
       loyaltyPoints: req.user.loyaltyPoints || 0,
       mostVisitedCity: calculateMostVisitedCity(bookings),
       completedTrips: bookings.filter(b => b.booking_status === 'CONFIRMED').length,
-      averagePrice: bookings.length ? Math.round(bookings.reduce((sum, b) => sum + b.amount, 0) / bookings.length) : 0
+      averagePrice: bookings.length ? Math.round(bookings.reduce((sum, b) => sum + Number(b.amount), 0) / bookings.length) : 0
     };
 
     res.json(metrics);

@@ -36,7 +36,7 @@ export const useReservation = () => {
           last4: data.paymentDetails.cardNumber.slice(-4)
         }
       });
-      
+
       showToast(t('success.reservationConfirmed'), 'success');
       return response;
     } catch (error) {
@@ -59,15 +59,15 @@ export const useReservation = () => {
     }
   };
 
-  const validateSeat = async (journeyId: string, seatNumber: string) => {
+  const validateSeat = async (journeyId: string, seatNumber: string): Promise<boolean> => {
     try {
       const response = await api.get(`/bookings/validate-seat`, {
         params: { journeyId, seatNumber }
       });
       return response.isValid;
     } catch (error) {
-      showToast(t('errors.seatValidation'), 'error');
-      throw error;
+      console.error('Error validating seat:', error);
+      return false;
     }
   };
 

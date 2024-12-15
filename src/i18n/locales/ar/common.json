@@ -13,5 +13,8 @@
   "next": "التالي",
   "cancel": "إلغاء",
   "confirm": "تأكيد",
-  "loyaltyDiscount": "خصم {{status}} للأعضاء"
+  "loyaltyDiscount": "خصم {{status}} للأعضاء",
+  "notifications": {
+    "markAsRead": "تم القراءة"
+  }
 }

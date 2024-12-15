@@ -12,7 +12,7 @@ export interface Booking extends RowDataPacket {
   booking_date: Date;
   payment_status: 'PENDING' | 'COMPLETED' | 'REFUNDED';
   payment_method: string;
-  amount: number;
+  amount: string;
 }
 
 export const BookingModel = {

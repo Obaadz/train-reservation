@@ -6,7 +6,7 @@ import { useBookingHistory } from "../../hooks/useBookingHistory";
 const BookingHistory: React.FC = () => {
   const { t } = useTranslation(["dashboard"]);
   const { bookings, loading, error, cancelBooking } = useBookingHistory();
-  console.log(bookings);
+
   if (loading) {
     return (
       <div className="bg-white rounded-lg shadow-md p-6">

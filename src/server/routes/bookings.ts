@@ -9,7 +9,6 @@ const router = Router();
 
 // Create new booking
 router.post('/', authenticateToken, async (req, res) => {
-  console.log('here')
   try {
     const { journeyId, classId, seatNumber, passengerDetails, paymentDetails } = req.body;
     const isArabic = req.headers['accept-language']?.includes('ar');

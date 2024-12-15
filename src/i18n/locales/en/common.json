@@ -13,5 +13,8 @@
   "next": "Next",
   "cancel": "Cancel",
   "confirm": "Confirm",
-  "loyaltyDiscount": "{{status}} Member Discount"
+  "loyaltyDiscount": "{{status}} Member Discount",
+  "notifications": {
+    "markAsRead": "Mark as read"
+  }
 }
